@@ -285,6 +285,17 @@
                 },
                 {
                     "name": "",
+                    "id": "50e32796-93a3-4256-a242-c1d6b0f8491f",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "6f483974-9a73-4ef6-877b-3ad3d050d98a",
                     "path": "<Gamepad>/rightStickPress",
                     "interactions": "",
