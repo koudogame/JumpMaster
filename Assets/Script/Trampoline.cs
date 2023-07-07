@@ -25,9 +25,18 @@ public class Trampoline : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.name == "Player" || collision.gameObject.tag == "Player")
+        if(collision.gameObject.name == targetName || collision.gameObject.tag == targetTagName)
         {
-            collision.rigidbody.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+            //Ray ray = new Ray(this.transform.position, Vector3.up);
+            //RaycastHit hit;
+            //if(Physics.Raycast(ray, out hit, 1f))
+            //{
+            //    collision.rigidbody.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+            //}
+            if(collision.transform.position.y > this.transform.position.y)
+            {
+                collision.rigidbody.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+            }
         }
     }
 }

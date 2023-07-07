@@ -49,6 +49,27 @@ public class PlayerMove : MonoBehaviour
     readonly float GRAVITY = 9.81f;
     readonly Vector2 VECTOR2_ZERO = new Vector2(0, 0);
 
+
+    public float animSpeed = 1.5f;              // アニメーション再生速度設定
+    public float lookSmoother = 3.0f;           // a smoothing setting for camera motion
+    public bool useCurves = true;               // Mecanimでカーブ調整を使うか設定する
+                                                // このスイッチが入っていないとカーブは使われない
+    public float useCurvesHeight = 0.5f;        // カーブ補正の有効高さ(地面をすり抜けやすい時には大きくする)
+
+    // キャラクターコントローラ（カプセルコライダ）の参照
+    private CapsuleCollider col;
+    // CapsuleColliderで設定されているコライダのHeiht、Centerの初期値を収める変数
+    private float orgColHight;
+    private Vector3 orgVectColCenter;
+    private Animator anim;                          // キャラにアタッチされるアニメーターへの参照
+    private AnimatorStateInfo currentBaseState;     // baselayerで使われる、アニメーターの現在の状態の参照
+
+    // アニメーター各ステートへの参照
+    static int idleState = Animator.StringToHash("Base Layer.Idle");
+    static int locoState = Animator.StringToHash("Base Layer.Locomotion");
+    static int jumpState = Animator.StringToHash("Base Layer.Jump");
+    static int restState = Animator.StringToHash("Base Layer.Rest");
+
     void Start()
     {
         cameraTrn = Camera.main.transform;
@@ -57,6 +78,15 @@ public class PlayerMove : MonoBehaviour
         rigidBody.drag = groundDrag;
 
         readyToJump = true;
+
+
+        // Animatorコンポーネントを取得する
+        anim = GetComponent<Animator>();
+        // CapsuleColliderコンポーネントを取得する（カプセル型コリジョン）
+        col = GetComponent<CapsuleCollider>();
+        // CapsuleColliderコンポーネントのHeight、Centerの初期値を保存する
+        orgColHight = col.height;
+        orgVectColCenter = col.center;
     }
 
     void Update()
@@ -74,7 +104,92 @@ public class PlayerMove : MonoBehaviour
 
     void FixedUpdate()
     {
+        float h = moveInput.x;  // 入力デバイスの水平軸をhで定義
+        float v = Mathf.Abs(moveInput.y);  // 入力デバイスの垂直軸をvで定義
+        anim.SetFloat("Speed", v);     // Animator側で設定している"Speed"パラメタにvを渡す
+        anim.SetFloat("Direction", h); // Animator側で設定している"Direction"パラメタにhを渡す
+        anim.speed = animSpeed;        // Animatorのモーション再生速度にanimSpeedを設定する
+        currentBaseState = anim.GetCurrentAnimatorStateInfo(0); // 参照用のステート変数にBaseLayer(0)の現在のステートを設定する
+
         Move();
+
+        // 以下、Animatorの各ステート中での処理
+        // Locomotion中
+        // 現在のベースレイヤーがlocoStateの時
+        if (currentBaseState.fullPathHash == locoState)
+        {
+            // カーブでコライダー調整をしているときは、念のためにリセットする
+            if (useCurves)
+            {
+                ResetCollider();
+            }
+        }
+        // JUMP中の処理
+        // 現在のベースレイヤーがjumpStateの時
+        else if (currentBaseState.fullPathHash == jumpState)
+        {
+            // ステートがトランジション中でない場合
+            if (!anim.IsInTransition(0))
+            {
+                // 以下、カーブ調整をする場合の処理
+                if (useCurves)
+                {
+                    // 以下JUMP00アニメーションについているカーブJumpHeightとGravityControl
+                    // JumpHeight:JUMP00でのジャンプの高さ(0～1)
+                    float jumpHeight = anim.GetFloat("JumpHeight");
+
+                    // レイキャストをキャラクターのセンターから落とす
+                    Ray ray = new Ray(transform.position + Vector3.up, -Vector3.up);
+                    RaycastHit hitInfo = new RaycastHit();
+                    // 高さがuseCurvesHeight以上あるときのみ、コライダーの高さと中心をJUMP00アニメーションについているカーブで調整する
+                    if (Physics.Raycast(ray, out hitInfo))
+                    {
+                        if (hitInfo.distance > useCurvesHeight)
+                        {
+                            col.height = orgColHight - jumpHeight;      // 調整されたコライダーの高さ
+                            float adjCenterY = orgVectColCenter.y + jumpHeight;
+                            col.center = new Vector3(0, adjCenterY, 0); // 調整されたコライダーのセンター
+                        }
+                        else
+                        {
+                            // 閾値よりも低い時には初期値に戻す（念のため）					
+                            ResetCollider();
+                        }
+                    }
+                }
+                // Jumpbool値をリセットする（ループしないようにする）			
+                anim.SetBool("Jump", false);
+            }
+        }
+        // IDLE中の処理
+        // 現在のベースレイヤーがidleStateの時
+        else if (currentBaseState.fullPathHash == idleState)
+        {
+            // カーブでコライダー調整をしているときは、念のためリセットする
+            if (useCurves)
+            {
+                ResetCollider();
+            }
+        }
+        // REST中の処理
+        // 現在のベースレイヤーがrestStateの時
+        else if (currentBaseState.fullPathHash == restState)
+        {
+            // ステートが遷移中でない場合、Restbool値をリセットする（ループしないようにする）
+            if (!anim.IsInTransition(0))
+            {
+                anim.SetBool("Rest", false);
+            }
+        }
+    }
+
+
+    // キャラクターのコライダーサイズのリセット
+    void ResetCollider()
+    {
+        // コンポーネントのHeight、Centerの初期値を戻す
+        col.height = orgColHight;
+        col.center = orgVectColCenter;
     }
 
 
@@ -199,6 +314,21 @@ public class PlayerMove : MonoBehaviour
             rigidBody.AddForce(transform.up * jumpForce, ForceMode.Impulse);
 
             Invoke(nameof(ResetJump), jumpCooldown);
+
+            //アニメーションのステートがLocomotionの最中のみジャンプできる
+            if (currentBaseState.fullPathHash == locoState)
+            {
+                //ステート遷移中でなかったらジャンプできる
+                if (!anim.IsInTransition(0))
+                {
+                    anim.SetBool("Jump", true);     // Animatorにジャンプに切り替えるフラグを送る
+                }
+            }
+            // Rest状態になる
+            if (currentBaseState.fullPathHash == idleState)
+            {
+                anim.SetBool("Rest", true);
+            }
         }
     }
     private void ResetJump()
