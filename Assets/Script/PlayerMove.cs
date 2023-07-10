@@ -104,10 +104,10 @@ public class PlayerMove : MonoBehaviour
 
     void FixedUpdate()
     {
-        float h = moveInput.x;  // 入力デバイスの水平軸をhで定義
+        float h = Mathf.Abs(moveInput.x);  // 入力デバイスの水平軸をhで定義
         float v = Mathf.Abs(moveInput.y);  // 入力デバイスの垂直軸をvで定義
-        anim.SetFloat("Speed", v);     // Animator側で設定している"Speed"パラメタにvを渡す
-        anim.SetFloat("Direction", h); // Animator側で設定している"Direction"パラメタにhを渡す
+        anim.SetFloat("Speed", v+h);     // Animator側で設定している"Speed"パラメタにvを渡す
+        //anim.SetFloat("Direction", h); // Animator側で設定している"Direction"パラメタにhを渡す
         anim.speed = animSpeed;        // Animatorのモーション再生速度にanimSpeedを設定する
         currentBaseState = anim.GetCurrentAnimatorStateInfo(0); // 参照用のステート変数にBaseLayer(0)の現在のステートを設定する
 
