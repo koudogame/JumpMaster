@@ -36,6 +36,7 @@ public class Trampoline : MonoBehaviour
             if(collision.transform.position.y > this.transform.position.y)
             {
                 collision.rigidbody.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+                Destroy(gameObject);
             }
         }
     }

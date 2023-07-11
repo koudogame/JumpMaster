@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class TrampolineGenerator : MonoBehaviour
 {
+    public GameObject Trampoline;
+    Vector3[] allObjPos;
+    float posY = 1.6f;
+    float span = 1.0f;
+    float delta = 0f;
+    int createCnt = 0;
+
     [Header("PositionDistance")]
     [SerializeField] float minDistance;
     [SerializeField] float maxDistance;
@@ -15,12 +22,6 @@ public class TrampolineGenerator : MonoBehaviour
     [Header("NumberOfObject")]
     [SerializeField] int nowNumber;
     [SerializeField] int maxNumber;
-
-    public GameObject Trampoline;
-    Vector3[] allObjPos;
-    float span = 1.0f;
-    float delta = 0f;
-    int createCnt = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -44,9 +45,7 @@ public class TrampolineGenerator : MonoBehaviour
         if(this.delta > this.span)
         {
             this.delta = 0f;
-            GameObject go = Instantiate(Trampoline);
-            int px = Random.Range(-6, 7);
-            go.transform.position = new Vector3(px, 0, 0);
+            CreateInstance(Trampoline);
         }
     }
 
@@ -55,13 +54,18 @@ public class TrampolineGenerator : MonoBehaviour
         GameObject go = Instantiate(prefab);
         float px = Random.Range(minRange, maxRange);
         float pz = Random.Range(minRange, maxRange);
-        go.transform.position = new Vector3(px, 0, pz);
+        go.transform.position = new Vector3(px, posY, pz);
 
-        for( int i = 0; i < maxNumber; i++ )
+        if (createCnt > 0)
         {
-            if(go.transform.position == allObjPos[i])
+            for (int i = 0; i < createCnt; i++)
             {
-
+                while (go.transform.position == allObjPos[i])
+                {
+                    px = Random.Range(minRange, maxRange);
+                    pz = Random.Range(minRange, maxRange);
+                    go.transform.position = new Vector3(px, posY, pz);
+                }
             }
         }
 
