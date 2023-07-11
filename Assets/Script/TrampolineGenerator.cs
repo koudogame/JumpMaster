@@ -51,6 +51,8 @@ public class TrampolineGenerator : MonoBehaviour
 
     private void CreateInstance(GameObject prefab)
     {
+        if (createCnt >= maxNumber) return;
+
         GameObject go = Instantiate(prefab);
         float px = Random.Range(minRange, maxRange);
         float pz = Random.Range(minRange, maxRange);
