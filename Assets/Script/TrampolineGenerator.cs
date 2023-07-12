@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class TrampolineGenerator : MonoBehaviour
 {
     public GameObject Trampoline;
     Vector3[] allObjPos;
-    float posY = 1.6f;
-    float span = 1.0f;
+    float posY = 1f;
+    float span = 0.1f;
     float delta = 0f;
     int createCnt = 0;
 
@@ -29,10 +30,10 @@ public class TrampolineGenerator : MonoBehaviour
         minDistance = 2f;
         maxDistance = 4f;
 
-        minRange = -25f;
-        maxRange = 25f;
+        minRange = -10f;
+        maxRange = 10f;
 
-        nowNumber = 5;
+        nowNumber = 10;
         maxNumber = 10;
 
         allObjPos = new Vector3[maxNumber];
@@ -41,6 +42,8 @@ public class TrampolineGenerator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(nowNumber > maxNumber) nowNumber = maxNumber;
+
         this.delta += Time.deltaTime;
         if(this.delta > this.span)
         {
@@ -49,9 +52,10 @@ public class TrampolineGenerator : MonoBehaviour
         }
     }
 
+    // インスタンスの生成。引数で渡したPrefabのインスタンスが生成される
     private void CreateInstance(GameObject prefab)
     {
-        if (createCnt >= maxNumber) return;
+        if (createCnt >= nowNumber) return;
 
         GameObject go = Instantiate(prefab);
         float px = Random.Range(minRange, maxRange);
@@ -69,9 +73,25 @@ public class TrampolineGenerator : MonoBehaviour
                     go.transform.position = new Vector3(px, posY, pz);
                 }
             }
+            //Camera camera = GetComponent<Camera>();
+            //float distance = 20.0f;
+            //Ray ray = camera.ScreenPointToRay(go.transform.position);
+            //RaycastHit hit;
+            //if (Physics.Raycast(ray, out hit, distance))
+            //{
+            //    Vector3 movement = Vector3.Scale(prefab.transform.localScale, hit.normal) / 2;
+            //    go = Instantiate(prefab, hit.point, Quaternion.identity);
+            //    go.transform.position = new Vector3(hit.point.x + movement.x, hit.point.y + movement.y, hit.point.z + movement.z);
+            //}
         }
 
         allObjPos[createCnt] = go.transform.position;
         createCnt++;
+    }
+
+    // トランポリンオブジェクトの破棄の際に呼ぶ。生成カウントを1減らす
+    public void DestroyCnt()
+    {
+        createCnt--;
     }
 }

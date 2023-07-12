@@ -11,10 +11,12 @@ public class Trampoline : MonoBehaviour
     [Header("Jumping")]
     [SerializeField] float jumpForce = 10;
 
+    GameObject generator;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        generator = GameObject.Find("TrampolineGenerator");
     }
 
     // Update is called once per frame
@@ -36,6 +38,7 @@ public class Trampoline : MonoBehaviour
             if(collision.transform.position.y > this.transform.position.y)
             {
                 collision.rigidbody.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+                generator.GetComponent<TrampolineGenerator>().DestroyCnt();
                 Destroy(gameObject);
             }
         }

@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 7750973887140034380}
   - component: {fileID: 7750973887140034483}
   - component: {fileID: 7750973887140034482}
-  - component: {fileID: 7750973887140034481}
   - component: {fileID: 7750973887140034480}
   m_Layer: 0
   m_Name: Trampoline
@@ -32,8 +31,8 @@ Transform:
   m_GameObject: {fileID: 7750973887140034494}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.56, y: 1.62, z: -5.57}
-  m_LocalScale: {x: 2, y: 0.19999999, z: 2}
-  m_ConstrainProportionsScale: 1
+  m_LocalScale: {x: 2, y: 0.1, z: 2}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7750973888567481104}
   - {fileID: 7750973888500074180}
@@ -134,19 +133,6 @@ MonoBehaviour:
   targetName: Player
   targetTagName: Player
   jumpForce: 10
---- !u!135 &7750973887140034481
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7750973887140034494}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Radius: 0.43
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!64 &7750973887140034480
 MeshCollider:
   m_ObjectHideFlags: 0
