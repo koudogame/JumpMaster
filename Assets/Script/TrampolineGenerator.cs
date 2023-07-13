@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 public class TrampolineGenerator : MonoBehaviour
 {
@@ -13,29 +14,20 @@ public class TrampolineGenerator : MonoBehaviour
     int createCnt = 0;
 
     [Header("PositionDistance")]
-    [SerializeField] float minDistance;
-    [SerializeField] float maxDistance;
+    [SerializeField] float minDistance = 2f;
+    [SerializeField] float maxDistance = 4f;
 
     [Header("PositionRange")]
-    [SerializeField] float minRange;
-    [SerializeField] float maxRange;
+    [SerializeField] float minRange = -10f;
+    [SerializeField] float maxRange = 10f;
 
     [Header("NumberOfObject")]
-    [SerializeField] int nowNumber;
-    [SerializeField] int maxNumber;
+    [SerializeField] int nowNumber = 10;
+    [SerializeField] int maxNumber = 10;
 
     // Start is called before the first frame update
     void Start()
     {
-        minDistance = 2f;
-        maxDistance = 4f;
-
-        minRange = -10f;
-        maxRange = 10f;
-
-        nowNumber = 10;
-        maxNumber = 10;
-
         allObjPos = new Vector3[maxNumber];
     }
 
@@ -57,20 +49,41 @@ public class TrampolineGenerator : MonoBehaviour
     {
         if (createCnt >= nowNumber) return;
 
-        GameObject go = Instantiate(prefab);
+        //GameObject go = Instantiate(prefab);
         float px = Random.Range(minRange, maxRange);
         float pz = Random.Range(minRange, maxRange);
-        go.transform.position = new Vector3(px, posY, pz);
+        //go.transform.position = new Vector3(px, posY, pz);
+        Vector3 goPos = new Vector3(px, posY, pz);
 
         if (createCnt > 0)
         {
             for (int i = 0; i < createCnt; i++)
             {
-                while (go.transform.position == allObjPos[i])
+                while (/*go.transform.position*/goPos == allObjPos[i])
                 {
                     px = Random.Range(minRange, maxRange);
                     pz = Random.Range(minRange, maxRange);
-                    go.transform.position = new Vector3(px, posY, pz);
+                    /*go.transform.position*/goPos = new Vector3(px, posY, pz);
+                }
+            }
+            Vector3 halfExtents = new Vector3(0.5f, 0.5f, 0.5f);
+
+            // ---
+            // 10回試す
+            for (int n = 0; n < 10; n++)
+            {
+                // ランダムの位置
+                Vector3 pos = Random.insideUnitCircle * 5;
+                pos.z = pos.y;
+                pos.y = 0.5f;
+
+                // ボックスとアイテムが重ならないとき
+                if (!Physics.CheckBox(pos, halfExtents, Quaternion.identity, 1 << 12))
+                {
+                    // アイテムをインスタンス化
+                    //items.Add(Instantiate(item, pos, Quaternion.identity));
+                    Instantiate(prefab, pos, Quaternion.identity);
+                    break;
                 }
             }
             //Camera camera = GetComponent<Camera>();
@@ -85,7 +98,7 @@ public class TrampolineGenerator : MonoBehaviour
             //}
         }
 
-        allObjPos[createCnt] = go.transform.position;
+        allObjPos[createCnt] = /*go.transform.position*/goPos;
         createCnt++;
     }
 
