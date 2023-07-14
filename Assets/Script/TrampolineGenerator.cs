@@ -49,43 +49,44 @@ public class TrampolineGenerator : MonoBehaviour
     {
         if (createCnt >= nowNumber) return;
 
-        //GameObject go = Instantiate(prefab);
+        GameObject go = Instantiate(prefab);
         float px = Random.Range(minRange, maxRange);
         float pz = Random.Range(minRange, maxRange);
-        //go.transform.position = new Vector3(px, posY, pz);
-        Vector3 goPos = new Vector3(px, posY, pz);
+        go.transform.position = new Vector3(px, posY, pz);
+        //Vector3 goPos = new Vector3(px, posY, pz);
 
         if (createCnt > 0)
         {
             for (int i = 0; i < createCnt; i++)
             {
-                while (/*go.transform.position*/goPos == allObjPos[i])
+                while (go.transform.position == allObjPos[i])
                 {
                     px = Random.Range(minRange, maxRange);
                     pz = Random.Range(minRange, maxRange);
-                    /*go.transform.position*/goPos = new Vector3(px, posY, pz);
+                    go.transform.position = new Vector3(px, posY, pz);
                 }
             }
-            Vector3 halfExtents = new Vector3(0.5f, 0.5f, 0.5f);
 
-            // ---
-            // 10回試す
-            for (int n = 0; n < 10; n++)
-            {
-                // ランダムの位置
-                Vector3 pos = Random.insideUnitCircle * 5;
-                pos.z = pos.y;
-                pos.y = 0.5f;
+            //Vector3 halfExtents = new Vector3(5f, 1f, 5f);
+            //// ---
+            //// 10回試す
+            //for (int n = 0; n < 10; n++)
+            //{
+            //    // ランダムの位置
+            //    Vector3 pos = Random.insideUnitCircle * 10;
+            //    pos.z = pos.y;
+            //    pos.y = posY;
 
-                // ボックスとアイテムが重ならないとき
-                if (!Physics.CheckBox(pos, halfExtents, Quaternion.identity, 1 << 12))
-                {
-                    // アイテムをインスタンス化
-                    //items.Add(Instantiate(item, pos, Quaternion.identity));
-                    Instantiate(prefab, pos, Quaternion.identity);
-                    break;
-                }
-            }
+            //    // ボックスとアイテムが重ならないとき
+            //    if (!Physics.CheckBox(pos, halfExtents, Quaternion.identity, 1 << 12))
+            //    {
+            //        // アイテムをインスタンス化
+            //        //items.Add(Instantiate(item, pos, Quaternion.identity));
+            //        Instantiate(prefab, pos, Quaternion.identity);
+            //        goPos = pos;
+            //        break;
+            //    }
+            //}
             //Camera camera = GetComponent<Camera>();
             //float distance = 20.0f;
             //Ray ray = camera.ScreenPointToRay(go.transform.position);
@@ -98,7 +99,7 @@ public class TrampolineGenerator : MonoBehaviour
             //}
         }
 
-        allObjPos[createCnt] = /*go.transform.position*/goPos;
+        allObjPos[createCnt] = go.transform.position; //goPos;
         createCnt++;
     }
 
