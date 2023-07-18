@@ -22,7 +22,7 @@ public class GameDirector : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        canvas = GameObject.Find("Image");
+        canvas = GameObject.Find("Countdown");
         canvas.GetComponent<Image>().sprite = startSprite;
         endTime = 5f;
         endFlag = true;
