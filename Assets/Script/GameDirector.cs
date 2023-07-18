@@ -15,6 +15,7 @@ public class GameDirector : MonoBehaviour
     [SerializeField] private Sprite startSprite;
     [SerializeField] private Sprite endSprite;
     [SerializeField] private Sprite defSprite;
+    [SerializeField] private Sprite[] countSprite = new Sprite[10];
 
 
     private GameObject canvas;
@@ -22,10 +23,19 @@ public class GameDirector : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        canvas = GameObject.Find("Countdown");
-        canvas.GetComponent<Image>().sprite = startSprite;
+        canvas = GameObject.Find("Start&End");
+        canvas.GetComponent<Image>().sprite = defSprite;
         endTime = 5f;
         endFlag = true;
+
+        for( int i = 0; i < countSprite.Length; ++i )
+        {
+            if (countSprite[ i ] == null)
+            {
+                Debug.Log("countSprite[ " + i  + " ]‚ªNULL‚Å‚·");
+                return;
+            }
+        }
     }
 
     // Update is called once per frame
@@ -33,6 +43,21 @@ public class GameDirector : MonoBehaviour
     {
         ErrorCheck();
         nowTime += Time.deltaTime;
+
+        if( endFlag )
+        {
+            //switch( nowTime )
+            //{
+            //    case 1f: canvas.GetComponent<Image>().sprite = countSprite[ 3 ]; break;
+            //    case 2f: canvas.GetComponent<Image>().sprite = countSprite[ 2 ]; break;
+            //    case 3f: canvas.GetComponent<Image>().sprite = countSprite[ 1 ]; break;
+            //    case 4f: canvas.GetComponent<Image>().sprite = startSprite;      break;
+            //}
+            if(nowTime >= 4f) canvas.GetComponent<Image>().sprite = startSprite;
+            else if(nowTime >= 3f) canvas.GetComponent<Image>().sprite = countSprite[1];
+            else if(nowTime >= 2f) canvas.GetComponent<Image>().sprite = countSprite[2];
+            else if(nowTime >= 1f) canvas.GetComponent<Image>().sprite = countSprite[3];
+        }
 
         if( endFlag && nowTime >= endTime )
         {
