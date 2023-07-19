@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using static UnityEditor.Progress;
 
@@ -9,39 +10,37 @@ public class TrampolineGenerator : MonoBehaviour
     public GameObject Trampoline;
     Vector3[] allObjPos;
     float posY = 1f;
-    float span = 0.1f;
+    public float span = 0.1f;
     float delta = 0f;
-    int createCnt = 0;
-
-    [Header("Position Distance")]
-    [SerializeField] float minDistance = 2f;
-    [SerializeField] float maxDistance = 4f;
+    bool initFlag = true;
 
     [Header("Position Range")]
     [SerializeField] float minRange = -10f;
     [SerializeField] float maxRange = 10f;
 
-    [Header("Number Of Object")]
-    [SerializeField] int nowNumber = 10;
-    [SerializeField] int maxNumber = 10;
-    [SerializeField] int createNowNumber = 0;
+    [Header("CreateCount")]
+    [SerializeField] int nowCreateCnt = 0;
+    [SerializeField] int maxCreateCnt = 10;
 
     // Start is called before the first frame update
     void Start()
     {
-        allObjPos = new Vector3[maxNumber];
+        allObjPos = new Vector3[ maxCreateCnt ];
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(nowNumber > maxNumber) nowNumber = maxNumber;
+        if (initFlag) span = 0.1f;
+        else span = 0.5f;
 
-        createNowNumber = createCnt;
-        this.delta += Time.deltaTime;
-        if(this.delta > this.span)
+        if( nowCreateCnt > maxCreateCnt ) nowCreateCnt = maxCreateCnt;
+
+        delta += Time.deltaTime;
+        if(delta > span)
         {
-            this.delta = 0f;
+            if(initFlag && nowCreateCnt >= maxCreateCnt - 1) initFlag = false;
+            delta = 0f;
             CreateInstance(Trampoline);
         }
     }
@@ -49,15 +48,19 @@ public class TrampolineGenerator : MonoBehaviour
     // インスタンスの生成。引数で渡したPrefabのインスタンスが生成される
     private void CreateInstance(GameObject prefab)
     {
-        if (createCnt >= nowNumber) return;
+        // 現在の生成数が最大生成数以上の時、処理を行わない
+        if (nowCreateCnt >= maxCreateCnt) return;
 
         GameObject go = Instantiate(prefab);
+
+        // 生成範囲内で、ランダムに座標を決める
         float px = Random.Range(minRange, maxRange);
         float pz = Random.Range(minRange, maxRange);
         go.transform.position = new Vector3(px, posY, pz);
         //Vector3 goPos = new Vector3(px, posY, pz);
 
-        if (createCnt > 0)
+        // 現在の生成数が0より大きいとき
+        if (nowCreateCnt > 0)
         {
             //for (int i = 0; i < createCnt; i++)
             //{
@@ -71,8 +74,8 @@ public class TrampolineGenerator : MonoBehaviour
 
             Vector3 halfExtents = new Vector3(1f, 0.05f, 1f);
             // ---
-            // createCnt回試す
-            for (int n = 0; n < createCnt; n++)
+            // nowCreateCnt回まで試す
+            for (int n = 0; n < nowCreateCnt; ++n)
             {
                 // ランダムの位置
                 px = Random.Range(minRange, maxRange);
@@ -108,13 +111,49 @@ public class TrampolineGenerator : MonoBehaviour
             //}
         }
 
-        allObjPos[createCnt] = go.transform.position; //goPos;
-        createCnt++;
+        allObjPos[nowCreateCnt] = go.transform.position; //goPos;
+        ++nowCreateCnt;
     }
 
     // トランポリンオブジェクトの破棄の際に呼ぶ。生成カウントを1減らす
-    public void DestroyCnt()
+    public void DestroyCnt( Vector3 Position )
     {
-        createCnt--;
+        bool flg = false; // 前詰め開始フラグ
+        int startNum = 0; // 前詰め開始位置を代入
+
+        // 受け取った座標と同じ値を配列内の要素から探し出す
+        // nowCreateCnt回まで試す
+        for (int n = 0; n < nowCreateCnt; ++n)
+        {
+            if( allObjPos[ n ] == Position )
+            {
+                // 一致した要素が最後尾でない場合
+                if (n < nowCreateCnt - 1)
+                {
+                    allObjPos[n] = allObjPos[n + 1];
+                    startNum = n + 1;
+                    flg = true;
+                    break;
+                }
+                // 一致した要素が最後尾の場合
+                else { allObjPos[n] = Vector3.zero; break; }
+            }
+        }
+
+        // フラグがtureの時のみ通る、要素内データの前詰め
+        // nowCreateCnt回まで試す
+        if (flg)
+        {
+            for (int n = startNum; n < nowCreateCnt; ++n)
+            {
+                // 現在見ている要素が最後尾でない場合
+                if (n < nowCreateCnt - 1) allObjPos[n] = allObjPos[n + 1];
+
+                // 現在見ている要素が最後尾の場合
+                else { allObjPos[n] = Vector3.zero; break; }
+            }
+        }
+
+        --nowCreateCnt;
     }
 }

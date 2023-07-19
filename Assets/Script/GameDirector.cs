@@ -9,7 +9,7 @@ public class GameDirector : MonoBehaviour
     [Header("TimeLimit")]
     [SerializeField] float endTime = 60f;
     [SerializeField] float nowTime = 0f;
-    [SerializeField] bool endFlag = false;
+    [SerializeField] bool startFlag = false;
 
     [Header("UI")]
     [SerializeField] private Sprite startSprite;
@@ -26,7 +26,7 @@ public class GameDirector : MonoBehaviour
         canvas = GameObject.Find("Start&End");
         canvas.GetComponent<Image>().sprite = defSprite;
         endTime = 5f;
-        endFlag = true;
+        startFlag = true;
 
         for( int i = 0; i < countSprite.Length; ++i )
         {
@@ -44,7 +44,7 @@ public class GameDirector : MonoBehaviour
         ErrorCheck();
         nowTime += Time.deltaTime;
 
-        if( endFlag )
+        if( startFlag )
         {
             //switch( nowTime )
             //{
@@ -59,19 +59,19 @@ public class GameDirector : MonoBehaviour
             else if(nowTime >= 1f) canvas.GetComponent<Image>().sprite = countSprite[3];
         }
 
-        if( endFlag && nowTime >= endTime )
+        if( startFlag && nowTime >= endTime )
         {
             canvas.GetComponent<Image>().sprite = defSprite;
             endTime = 60f;
             nowTime = 0f;
-            endFlag = false;
+            startFlag = false;
         }
         else if( nowTime >= endTime )
         {
             canvas.GetComponent<Image>().sprite = endSprite;
             endTime = 5f;
             nowTime = 0f;
-            endFlag = true;
+            startFlag = true;
         }
     }
 
@@ -93,4 +93,6 @@ public class GameDirector : MonoBehaviour
             return;
         }
     }
+
+    bool GetStartFlag() { return startFlag; }
 }

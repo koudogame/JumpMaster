@@ -38,7 +38,7 @@ public class Trampoline : MonoBehaviour
             if(collision.transform.position.y > this.transform.position.y)
             {
                 collision.rigidbody.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-                generator.GetComponent<TrampolineGenerator>().DestroyCnt();
+                generator.GetComponent<TrampolineGenerator>().DestroyCnt( this.transform.position );
                 Destroy(gameObject);
             }
         }
