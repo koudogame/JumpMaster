@@ -10,6 +10,7 @@ public class Trampoline : MonoBehaviour
 
     [Header("Jumping")]
     [SerializeField] float jumpForce = 10;
+    [SerializeField] bool  jumpFlag = false;
 
     GameObject generator;
 
@@ -35,10 +36,28 @@ public class Trampoline : MonoBehaviour
             //{
             //    collision.rigidbody.AddForce(transform.up * jumpForce, ForceMode.Impulse);
             //}
-            if(collision.transform.position.y > this.transform.position.y)
+            if(collision.transform.position.y > this.transform.position.y && !jumpFlag)
             {
+                jumpFlag = true;
                 collision.rigidbody.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-                generator.GetComponent<TrampolineGenerator>().DestroyCnt( this.transform.position );
+            }
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.name == targetName || collision.gameObject.tag == targetTagName)
+        {
+            //Ray ray = new Ray(this.transform.position, Vector3.up);
+            //RaycastHit hit;
+            //if(Physics.Raycast(ray, out hit, 1f))
+            //{
+            //    collision.rigidbody.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+            //}
+            if (collision.transform.position.y > this.transform.position.y && jumpFlag)
+            {
+                jumpFlag = false;
+                generator.GetComponent<TrampolineGenerator>().DestroyCnt(this.transform.position);
                 Destroy(gameObject);
             }
         }
