@@ -13,11 +13,13 @@ public class Trampoline : MonoBehaviour
     [SerializeField] bool  jumpFlag = false;
 
     GameObject generator;
+    GameObject director;
 
     // Start is called before the first frame update
     void Start()
     {
         generator = GameObject.Find("TrampolineGenerator");
+        director = GameObject.Find("GameDirector");
     }
 
     // Update is called once per frame
@@ -58,6 +60,7 @@ public class Trampoline : MonoBehaviour
             {
                 jumpFlag = false;
                 generator.GetComponent<TrampolineGenerator>().DestroyCnt(this.transform.position);
+                director.GetComponent<GameDirector>().ScoreCount();
                 Destroy(gameObject);
             }
         }

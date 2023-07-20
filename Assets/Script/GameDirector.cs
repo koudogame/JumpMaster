@@ -11,6 +11,9 @@ public class GameDirector : MonoBehaviour
     [SerializeField] float nowTime = 0f;
     [SerializeField] bool startFlag = false;
 
+    [Header("Score")]
+    [SerializeField] int score = 0;
+
     [Header("UI")]
     [SerializeField] private Sprite startSprite;
     [SerializeField] private Sprite endSprite;
@@ -93,6 +96,8 @@ public class GameDirector : MonoBehaviour
             return;
         }
     }
+
+    public void ScoreCount() { ++score; }
 
     bool GetStartFlag() { return startFlag; }
 }
