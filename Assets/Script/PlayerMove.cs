@@ -181,6 +181,9 @@ public class PlayerMove : MonoBehaviour
                 anim.SetBool("Rest", false);
             }
         }
+
+        // ジャンプアニメーションの着地挙動のずらし処理
+        //if(anim.GetBool("Jump") && anim.)
     }
 
 
@@ -315,20 +318,20 @@ public class PlayerMove : MonoBehaviour
 
             Invoke(nameof(ResetJump), jumpCooldown);
 
-            //アニメーションのステートがLocomotionの最中のみジャンプできる
-            if (currentBaseState.fullPathHash == locoState)
-            {
-                //ステート遷移中でなかったらジャンプできる
-                if (!anim.IsInTransition(0))
-                {
+            ////アニメーションのステートがLocomotionの最中のみジャンプできる
+            //if (currentBaseState.fullPathHash == locoState)
+            //{
+            //    //ステート遷移中でなかったらジャンプできる
+            //    if (!anim.IsInTransition(0))
+            //    {
                     anim.SetBool("Jump", true);     // Animatorにジャンプに切り替えるフラグを送る
-                }
-            }
-            // Rest状態になる
-            if (currentBaseState.fullPathHash == idleState)
-            {
-                anim.SetBool("Rest", true);
-            }
+            //    }
+            //}
+            //// Rest状態になる
+            //if (currentBaseState.fullPathHash == idleState)
+            //{
+            //    anim.SetBool("Rest", true);
+            //}
         }
     }
     private void ResetJump()
