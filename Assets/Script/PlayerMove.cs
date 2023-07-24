@@ -44,6 +44,7 @@ public class PlayerMove : MonoBehaviour
 
     Vector2 moveInput; // 移動入力
     bool jumpInput;
+    bool jumpAnim;
 
     readonly float GROUND_DRAG = 5;
     readonly float GRAVITY = 9.81f;
@@ -78,7 +79,7 @@ public class PlayerMove : MonoBehaviour
         rigidBody.drag = groundDrag;
 
         readyToJump = true;
-
+        jumpAnim = false;
 
         // Animatorコンポーネントを取得する
         anim = GetComponent<Animator>();
@@ -94,6 +95,29 @@ public class PlayerMove : MonoBehaviour
         CheckGround();
         Rotate();
         SpeedControl();
+
+        //if ( isGrounded)
+        //{
+            anim.SetFloat("JumpSpeed", 1f);
+        //}
+        //else if (jumpAnim)
+        //{
+        //    anim.Update(0f);
+        //    var state = anim.GetCurrentAnimatorStateInfo(0);
+        //    float time = Mathf.Lerp(state.length, 0, state.normalizedTime);
+
+        //    Debug.Log(time);
+        //    // ジャンプアニメーションの着地挙動のずらし処理
+        //    if (jumpAnim && time >= 0.8f)
+        //    {
+        //        anim.SetFloat("JumpSpeed",0f);
+        //        jumpAnim = false;
+        //    }
+        //    else if (isGrounded && !wasGrounded)
+        //    {
+        //        anim.SetFloat("JumpSpeed", 1f);
+        //    }
+        //}
 
         if (jumpInput)
         {
@@ -181,9 +205,6 @@ public class PlayerMove : MonoBehaviour
                 anim.SetBool("Rest", false);
             }
         }
-
-        // ジャンプアニメーションの着地挙動のずらし処理
-        //if(anim.GetBool("Jump") && anim.)
     }
 
 
@@ -325,6 +346,7 @@ public class PlayerMove : MonoBehaviour
             //    if (!anim.IsInTransition(0))
             //    {
                     anim.SetBool("Jump", true);     // Animatorにジャンプに切り替えるフラグを送る
+            jumpAnim = true;
             //    }
             //}
             //// Rest状態になる
