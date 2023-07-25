@@ -183,6 +183,7 @@ public class PlayerMove : MonoBehaviour
                 }
                 // Jumpbool値をリセットする（ループしないようにする）			
                 anim.SetBool("Jump", false);
+                anim.SetBool("Fall", true);
             }
         }
         // IDLE中の処理
@@ -228,6 +229,7 @@ public class PlayerMove : MonoBehaviour
             if (isGrounded)
             {
                 rigidBody.drag = groundDrag;
+                if (anim.GetBool("Fall")) anim.SetBool("Fall", false);
             }
             else
             {
