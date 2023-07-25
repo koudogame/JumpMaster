@@ -1,7 +1,11 @@
+//
+//  ゲームの進行管理
+//
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.VersionControl;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameDirector : MonoBehaviour
@@ -15,6 +19,7 @@ public class GameDirector : MonoBehaviour
     [SerializeField] int score = 0;
 
     [Header("UI")]
+    [SerializeField] private Fade fade;
     [SerializeField] private Sprite startSprite;
     [SerializeField] private Sprite endSprite;
     [SerializeField] private Sprite defSprite;
@@ -26,6 +31,7 @@ public class GameDirector : MonoBehaviour
     private GameObject counter2UI;
     private GameObject countdown1UI;
     private GameObject countdown2UI;
+    private bool isClear;            //  クリアしたか
 
     // Start is called before the first frame update
     void Start()
@@ -41,9 +47,10 @@ public class GameDirector : MonoBehaviour
         nowTime = 5f;
         endTime = 0f;
         startFlag = true;
+        isClear = false;
 
         // エラーチェック
-        if(startAndEndUI == null)
+        if (startAndEndUI == null)
         {
             Debug.Log("startAndEndUIがNULLです");
             return;
@@ -74,6 +81,9 @@ public class GameDirector : MonoBehaviour
         }
 
         ErrorCheck();
+
+        // フェードイン
+        StartCoroutine(fade.FadeIn());
     }
 
     // Update is called once per frame
@@ -185,6 +195,18 @@ public class GameDirector : MonoBehaviour
         }
     }
 
+    private void FixedUpdate()
+    {
+        ////  クリア
+        //if (isClear)
+        //{
+        //    StartCoroutine(Clear());
+
+        //    //  クリアしたらゲームオーバーを無効にする
+        //    return;
+        //}
+    }
+
     void ErrorCheck()
     {
         if( defSprite == null )
@@ -212,6 +234,22 @@ public class GameDirector : MonoBehaviour
             }
         }
     }
+
+    ////  クリア
+    //private IEnumerator Clear()
+    //{
+    //    _eventText.text = "ステージクリア!!";
+    //    _eventText.color = Color.yellow;
+
+    //    //  2s待つ
+    //    yield return new WaitForSeconds(2);
+
+    //    //  リザルトシーンへ移行
+    //    SceneManager.LoadScene("ResultScene");
+    //}
+
+    ////  クリアを知らせてもらう
+    //public void CallClear() { isClear = true; }
 
     public void ScoreCount() { ++score; }
 
