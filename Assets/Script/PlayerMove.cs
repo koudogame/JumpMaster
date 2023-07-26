@@ -229,13 +229,17 @@ public class PlayerMove : MonoBehaviour
             if (isGrounded)
             {
                 rigidBody.drag = groundDrag;
-                if (anim.GetBool("Fall")) anim.SetBool("Fall", false);
+                //if (anim.GetBool("Fall")) anim.SetBool("Fall", false);
             }
             else
             {
                 rigidBody.drag = 0;
             }
             wasGrounded = isGrounded;
+        }
+        if (isGrounded)
+        {
+            if (anim.GetBool("Fall")) anim.SetBool("Fall", false);
         }
     }
 
@@ -260,6 +264,9 @@ public class PlayerMove : MonoBehaviour
     /// </summary>
     void Move()
     {
+        if (moveInput == Vector2.zero) anim.SetBool("Move", false);
+        else anim.SetBool("Move", true);
+
         moveDirection = orientationTrn.forward * moveInput.y + orientationTrn.right * moveInput.x;
 
         // ÉXÉçÅ[Évè„
@@ -362,6 +369,10 @@ public class PlayerMove : MonoBehaviour
     {
         readyToJump = true;
         exitingSlope = false;
+    }
+    public void JumpAnimFlagOn()
+    {
+        anim.SetBool("Jump", true);
     }
 
     /// <summary>

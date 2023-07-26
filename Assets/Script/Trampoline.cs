@@ -14,12 +14,14 @@ public class Trampoline : MonoBehaviour
 
     GameObject generator;
     GameObject director;
+    GameObject player;
 
     // Start is called before the first frame update
     void Start()
     {
         generator = GameObject.Find("TrampolineGenerator");
         director = GameObject.Find("GameDirector");
+        player = GameObject.Find(targetName);
     }
 
     // Update is called once per frame
@@ -30,7 +32,8 @@ public class Trampoline : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.name == targetName || collision.gameObject.tag == targetTagName)
+        // 当たった対象がターゲットと一致するとき
+        if (collision.gameObject.name == targetName || collision.gameObject.tag == targetTagName)
         {
             //Ray ray = new Ray(this.transform.position, Vector3.up);
             //RaycastHit hit;
@@ -48,6 +51,7 @@ public class Trampoline : MonoBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
+        // 当たった対象がターゲットと一致するとき
         if (collision.gameObject.name == targetName || collision.gameObject.tag == targetTagName)
         {
             //Ray ray = new Ray(this.transform.position, Vector3.up);
@@ -61,6 +65,7 @@ public class Trampoline : MonoBehaviour
                 jumpFlag = false;
                 generator.GetComponent<TrampolineGenerator>().DestroyCnt(this.transform.position);
                 director.GetComponent<GameDirector>().ScoreCount();
+                player.GetComponent<PlayerMove>().JumpAnimFlagOn();
                 Destroy(gameObject);
             }
         }
