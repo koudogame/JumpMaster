@@ -117,17 +117,22 @@ public class GameDirector : MonoBehaviour
         {
             // ƒNƒŠƒAŒã‚Ìˆ—
             startAndEndUI.GetComponent<Image>().sprite = endSprite;
+            StartCoroutine(/*fade.StartFade(0.0f, 1.0f)*/fade.FadeOut());
+            //new WaitForSeconds(12);
+            //StartCoroutine(/*fade.StartFade(0.0f, 1.0f)*/fade.FadeOut());
             endTime = 0f;
-            nowTime = 2f;
+            nowTime = 3f;
             isClear = true;
         }
         else if (nowTime <= endTime && isClear)
         {
-            StartCoroutine(/*fade.StartFade(0.0f, 1.0f)*/fade.FadeOut());
+            //StartCoroutine(/*fade.StartFade(0.0f, 1.0f)*/fade.FadeOut());
             isClear = false;
             endTime = 0f;
             nowTime = 0f;
+            //SceneManager.LoadScene("Result");
         }
+        if(fade.GetFadeAlpha() >= 1f) SceneManager.LoadScene("Result");
 
         // §ŒÀŠÔUI‚Ìˆ—
         if ( !startFlag && !isClear )
