@@ -10,7 +10,6 @@ public sealed class Fade : MonoBehaviour
     [Header("alpha値"), SerializeField] float alpha;
 
 
-
     //*****************************************************
     // フェードイン処理
     //*****************************************************
@@ -50,7 +49,7 @@ public sealed class Fade : MonoBehaviour
         {
             // Fade処理呼び出し
             time = FadeProcess(time, 0.0f, 1.0f);
-            Debug.Log("FadeOut:ON");
+            //Debug.Log("FadeOut:ON");
 
             // メソッドの中断
             yield return null;
@@ -129,6 +128,37 @@ public sealed class Fade : MonoBehaviour
 
         // 経過時間を返す
         return currentTime;
+    }
+
+    // フェード処理
+    public IEnumerator StartFade(float Start, float End)
+    {
+        GameObject startAndEndUI = GameObject.Find("Start&End");
+        float time = 0.0f; // 時間計測用
+        Image img = startAndEndUI.GetComponent<Image>(); // コンポーネントを取得
+
+        while (true)
+        {
+            yield return null;
+
+            // Lerpメソッドを使ってアルファ値を補間
+            float a = Mathf.Lerp(Start, End, time);
+            //img.color = new Color(1.0f, 1.0f, 1.0f, a);
+            Color imgColor = fadeImage.color;
+            fadeImage.color = /*new Color(imgColor.r, imgColor.g, imgColor.b, a)*/new Color(1.0f, 1.0f, 1.0f, a);
+            alpha = a;
+            // 補間に使う時間を進める
+            time += Time.deltaTime;
+
+            // 1秒経過したら終了
+            if (time > 1f)
+            {
+                // 誤差も出ると思うので念のため上書き
+                //img.color = new Color(1.0f, 1.0f, 1.0f, End);
+                fadeImage.color = /*new Color(imgColor.r, imgColor.g, imgColor.b, End)*/new Color(1.0f, 1.0f, 1.0f, a);
+                break;
+            }
+        }
     }
 
     public float GetFadeAlpha()

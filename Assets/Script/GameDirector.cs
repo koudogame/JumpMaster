@@ -121,6 +121,13 @@ public class GameDirector : MonoBehaviour
             nowTime = 2f;
             isClear = true;
         }
+        else if (nowTime <= endTime && isClear)
+        {
+            StartCoroutine(/*fade.StartFade(0.0f, 1.0f)*/fade.FadeOut());
+            isClear = false;
+            endTime = 0f;
+            nowTime = 0f;
+        }
 
         // 制限時間UIの処理
         if ( !startFlag && !isClear )
@@ -202,14 +209,15 @@ public class GameDirector : MonoBehaviour
         //    //  クリアしたらゲームオーバーを無効にする
         //    return;
         //}
-        if (nowTime <= endTime && isClear)
-        {
-            StartCoroutine(Clear());
-            // フェードアウト
-            //StartCoroutine(fade.FadeOut());
-            //  リザルトシーンへ移行
-            SceneManager.LoadScene("Result");
-        }
+        //if (nowTime <= endTime && isClear)
+        //{
+        //    //StartCoroutine(Clear());
+        //    // フェードアウト
+        //    //StartCoroutine(fade.FadeOut());
+        //    StartCoroutine(fade.StartFade(0.0f, 1.0f));
+        //    //  リザルトシーンへ移行
+        //    SceneManager.LoadScene("Result");
+        //}
     }
 
     void ErrorCheck()
