@@ -22,7 +22,7 @@ public sealed class Fade : MonoBehaviour
         while (time < duration)
         {
             // Fade処理呼び出し
-            time = FadeProcess(time, 1.0f, 0.0f);   
+            time = FadeProcess(time, 1.0f, 0.0f);
 
             // メソッドの中断
             yield return null;
@@ -49,7 +49,8 @@ public sealed class Fade : MonoBehaviour
         while (time < duration)
         {
             // Fade処理呼び出し
-            time = FadeProcess(time, 0.0f, 1.0f);   
+            time = FadeProcess(time, 0.0f, 1.0f);
+            Debug.Log("FadeOut:ON");
 
             // メソッドの中断
             yield return null;
@@ -128,5 +129,10 @@ public sealed class Fade : MonoBehaviour
 
         // 経過時間を返す
         return currentTime;
+    }
+
+    public float GetFadeAlpha()
+    {
+        return alpha;
     }
 }

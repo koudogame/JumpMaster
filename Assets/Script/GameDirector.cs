@@ -98,35 +98,32 @@ public class GameDirector : MonoBehaviour
 
         if( startFlag )
         {
-            //switch( nowTime )
-            //{
-            //    case 1f: startAndEndUI.GetComponent<Image>().sprite = countSprite[ 3 ]; break;
-            //    case 2f: startAndEndUI.GetComponent<Image>().sprite = countSprite[ 2 ]; break;
-            //    case 3f: startAndEndUI.GetComponent<Image>().sprite = countSprite[ 1 ]; break;
-            //    case 4f: startAndEndUI.GetComponent<Image>().sprite = startSprite;      break;
-            //}
+            // スタート前のカウントダウン処理
             if(nowTime <= 1f) startAndEndUI.GetComponent<Image>().sprite = startSprite;
             else if(nowTime <= 2f) startAndEndUI.GetComponent<Image>().sprite = countSprite[1];
             else if(nowTime <= 3f) startAndEndUI.GetComponent<Image>().sprite = countSprite[2];
             else if(nowTime <= 4f) startAndEndUI.GetComponent<Image>().sprite = countSprite[3];
         }
 
-        if( startFlag && nowTime <= endTime )
+        if ( startFlag && nowTime <= endTime )
         {
+            // スタート時の処理
             startAndEndUI.GetComponent<Image>().sprite = defSprite;
             endTime = 0f;
             nowTime = 60f;
             startFlag = false;
         }
-        else if( nowTime <= endTime )
+        else if( nowTime <= endTime && !isClear )
         {
+            // クリア後の処理
             startAndEndUI.GetComponent<Image>().sprite = endSprite;
-            //endTime = 0f;
-            //nowTime = 5f;
-            //startFlag = true;
+            endTime = 0f;
+            nowTime = 2f;
+            isClear = true;
         }
+
         // 制限時間UIの処理
-        if( !startFlag )
+        if ( !startFlag && !isClear )
         {
             int time = (int)nowTime;
             // 制限時間UIの十の位の処理
@@ -205,6 +202,14 @@ public class GameDirector : MonoBehaviour
         //    //  クリアしたらゲームオーバーを無効にする
         //    return;
         //}
+        if (nowTime <= endTime && isClear)
+        {
+            StartCoroutine(Clear());
+            // フェードアウト
+            //StartCoroutine(fade.FadeOut());
+            //  リザルトシーンへ移行
+            SceneManager.LoadScene("Result");
+        }
     }
 
     void ErrorCheck()
@@ -235,18 +240,24 @@ public class GameDirector : MonoBehaviour
         }
     }
 
-    ////  クリア
-    //private IEnumerator Clear()
-    //{
-    //    _eventText.text = "ステージクリア!!";
-    //    _eventText.color = Color.yellow;
+    //  クリア
+    private IEnumerator Clear()
+    {
+        //_eventText.text = "ステージクリア!!";
+        //_eventText.color = Color.yellow;
 
-    //    //  2s待つ
-    //    yield return new WaitForSeconds(2);
+        //  2s待つ
+        //yield return new WaitForSeconds(2);
 
-    //    //  リザルトシーンへ移行
-    //    SceneManager.LoadScene("ResultScene");
-    //}
+        // フェードアウト
+        StartCoroutine(fade.FadeOut());
+
+        ////  2s待つ
+        yield return new WaitForSeconds(2);
+
+        //  リザルトシーンへ移行
+        SceneManager.LoadScene("Result");
+    }
 
     ////  クリアを知らせてもらう
     //public void CallClear() { isClear = true; }
