@@ -130,9 +130,9 @@ public class GameDirector : MonoBehaviour
             isClear = false;
             endTime = 0f;
             nowTime = 0f;
-            //SceneManager.LoadScene("Result");
+            SceneManager.LoadScene("Result");
         }
-        if(fade.GetFadeAlpha() >= 1f) SceneManager.LoadScene("Result");
+        //if(fade.GetFadeAlpha() >= 1f) SceneManager.LoadScene("Result");
 
         // 制限時間UIの処理
         if ( !startFlag && !isClear )
@@ -172,35 +172,39 @@ public class GameDirector : MonoBehaviour
 
 
         ///- スコアカウント処理
-        // スコアカウンタUIの十の位の処理
-        switch ( score / 10 )
+        // 
+        if (!startFlag && !isClear)
         {
-            case 0: counter1UI.GetComponent<Image>().sprite = countSprite[ 0 ]; break;
-            case 1: counter1UI.GetComponent<Image>().sprite = countSprite[ 1 ]; break;
-            case 2: counter1UI.GetComponent<Image>().sprite = countSprite[ 2 ]; break;
-            case 3: counter1UI.GetComponent<Image>().sprite = countSprite[ 3 ]; break;
-            case 4: counter1UI.GetComponent<Image>().sprite = countSprite[ 4 ]; break;
-            case 5: counter1UI.GetComponent<Image>().sprite = countSprite[ 5 ]; break;
-            case 6: counter1UI.GetComponent<Image>().sprite = countSprite[ 6 ]; break;
-            case 7: counter1UI.GetComponent<Image>().sprite = countSprite[ 7 ]; break;
-            case 8: counter1UI.GetComponent<Image>().sprite = countSprite[ 8 ]; break;
-            case 9: counter1UI.GetComponent<Image>().sprite = countSprite[ 9 ]; break;
-            default: break;
-        }
-        // スコアカウンタUIの一の位の処理
-        switch ( score % 10 )
-        {
-            case 0: counter2UI.GetComponent<Image>().sprite = countSprite[ 0 ]; break;
-            case 1: counter2UI.GetComponent<Image>().sprite = countSprite[ 1 ]; break;
-            case 2: counter2UI.GetComponent<Image>().sprite = countSprite[ 2 ]; break;
-            case 3: counter2UI.GetComponent<Image>().sprite = countSprite[ 3 ]; break;
-            case 4: counter2UI.GetComponent<Image>().sprite = countSprite[ 4 ]; break;
-            case 5: counter2UI.GetComponent<Image>().sprite = countSprite[ 5 ]; break;
-            case 6: counter2UI.GetComponent<Image>().sprite = countSprite[ 6 ]; break;
-            case 7: counter2UI.GetComponent<Image>().sprite = countSprite[ 7 ]; break;
-            case 8: counter2UI.GetComponent<Image>().sprite = countSprite[ 8 ]; break;
-            case 9: counter2UI.GetComponent<Image>().sprite = countSprite[ 9 ]; break;
-            default: break;
+            // スコアカウンタUIの十の位の処理
+            switch (score / 10)
+            {
+                case 0: counter1UI.GetComponent<Image>().sprite = countSprite[0]; break;
+                case 1: counter1UI.GetComponent<Image>().sprite = countSprite[1]; break;
+                case 2: counter1UI.GetComponent<Image>().sprite = countSprite[2]; break;
+                case 3: counter1UI.GetComponent<Image>().sprite = countSprite[3]; break;
+                case 4: counter1UI.GetComponent<Image>().sprite = countSprite[4]; break;
+                case 5: counter1UI.GetComponent<Image>().sprite = countSprite[5]; break;
+                case 6: counter1UI.GetComponent<Image>().sprite = countSprite[6]; break;
+                case 7: counter1UI.GetComponent<Image>().sprite = countSprite[7]; break;
+                case 8: counter1UI.GetComponent<Image>().sprite = countSprite[8]; break;
+                case 9: counter1UI.GetComponent<Image>().sprite = countSprite[9]; break;
+                default: break;
+            }
+            // スコアカウンタUIの一の位の処理
+            switch (score % 10)
+            {
+                case 0: counter2UI.GetComponent<Image>().sprite = countSprite[0]; break;
+                case 1: counter2UI.GetComponent<Image>().sprite = countSprite[1]; break;
+                case 2: counter2UI.GetComponent<Image>().sprite = countSprite[2]; break;
+                case 3: counter2UI.GetComponent<Image>().sprite = countSprite[3]; break;
+                case 4: counter2UI.GetComponent<Image>().sprite = countSprite[4]; break;
+                case 5: counter2UI.GetComponent<Image>().sprite = countSprite[5]; break;
+                case 6: counter2UI.GetComponent<Image>().sprite = countSprite[6]; break;
+                case 7: counter2UI.GetComponent<Image>().sprite = countSprite[7]; break;
+                case 8: counter2UI.GetComponent<Image>().sprite = countSprite[8]; break;
+                case 9: counter2UI.GetComponent<Image>().sprite = countSprite[9]; break;
+                default: break;
+            }
         }
     }
 
