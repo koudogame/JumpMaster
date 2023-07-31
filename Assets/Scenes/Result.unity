@@ -1843,7 +1843,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1852336391}
-  - component: {fileID: 1852336390}
   - component: {fileID: 1852336389}
   - component: {fileID: 1852336388}
   m_Layer: 0
@@ -1866,6 +1865,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   score: 0
+  time: 0
   fade: {fileID: 1852336389}
   resultSprite: {fileID: 21300000, guid: ba33f1b4df9b2b24d8d39851e9f85ea6, type: 3}
   scoreSprite: {fileID: 21300000, guid: ec2a01d2b2e2a0a44891c4f0fe094ab6, type: 3}
@@ -1896,37 +1896,6 @@ MonoBehaviour:
   fadeImage: {fileID: 455543786}
   duration: 2
   alpha: 0
---- !u!114 &1852336390
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1852336387}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f66b134390c88344eb80eab70e1a032d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  endTime: 60
-  nowTime: 0
-  startFlag: 0
-  score: 0
-  fade: {fileID: 1852336389}
-  startSprite: {fileID: 21300000, guid: f24b3cde1eab1a04ea310b5f097d4abd, type: 3}
-  endSprite: {fileID: 21300000, guid: f364dd83eca024d4b885c0a85287cf89, type: 3}
-  defSprite: {fileID: 21300000, guid: b3f5f3c84d3506f4a9eac9b199aef5b6, type: 3}
-  countSprite:
-  - {fileID: 21300000, guid: bdb0089e41545c44ab7838b06fb2c638, type: 3}
-  - {fileID: 21300000, guid: 86483b1b401b65e4d85c9c7813cd42c0, type: 3}
-  - {fileID: 21300000, guid: 1af786e0125198941b90fbea9359c7ad, type: 3}
-  - {fileID: 21300000, guid: e7a52e847f67a1e4ca52f9781b1124b9, type: 3}
-  - {fileID: 21300000, guid: e4221ce69e78cbe43ad12f5b79e21e3a, type: 3}
-  - {fileID: 21300000, guid: 1ec75ee13d28d264d80d673ec85dd269, type: 3}
-  - {fileID: 21300000, guid: 6aef39cd8ac01e446b715128a516f632, type: 3}
-  - {fileID: 21300000, guid: cb1919a0c333da1428dd42b675aff14b, type: 3}
-  - {fileID: 21300000, guid: ee419a0a91b2a6944a863d352657c56a, type: 3}
-  - {fileID: 21300000, guid: 5058420aa08168947ae349a68cb5c467, type: 3}
 --- !u!4 &1852336391
 Transform:
   m_ObjectHideFlags: 0

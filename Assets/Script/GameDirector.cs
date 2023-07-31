@@ -3,6 +3,7 @@
 //
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -26,6 +27,8 @@ public class GameDirector : MonoBehaviour
     [SerializeField] private Sprite[] countSprite = new Sprite[10];
 
 
+    private ScoreChanger sceneSetter;
+    private GameObject setter;
     private GameObject startAndEndUI;
     private GameObject counter1UI;
     private GameObject counter2UI;
@@ -42,6 +45,8 @@ public class GameDirector : MonoBehaviour
         counter2UI = GameObject.Find("Counter2");
         countdown1UI = GameObject.Find("Countdown1");
         countdown2UI = GameObject.Find("Countdown2");
+        //sceneSetter = GetComponent<ScoreChanger>();
+        setter = GameObject.Find("GameScoreSingleton");
 
         startAndEndUI.GetComponent<Image>().sprite = defSprite;
         nowTime = 5f;
@@ -130,6 +135,10 @@ public class GameDirector : MonoBehaviour
             isClear = false;
             endTime = 0f;
             nowTime = 0f;
+            /*sceneSetter.SetTime((int)nowTime);*/ /*GetComponent<ScoreChanger>().SetTime((int)nowTime);*/
+            GameScoreSingleton.Instance.Score = score;
+            GameScoreSingleton.Instance.Time = (int)nowTime;
+            /*sceneSetter.SetScore(score);*/ /*GetComponent<ScoreChanger>().SetScore(score);*/
             SceneManager.LoadScene("Result");
         }
         //if(fade.GetFadeAlpha() >= 1f) SceneManager.LoadScene("Result");
