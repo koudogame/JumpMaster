@@ -19,6 +19,8 @@ public class SelectDirector : MonoBehaviour
     [SerializeField] private GameObject selectUI;
     [SerializeField] private GameObject[] modeUI = new GameObject[2];
     [SerializeField] private GameObject[] levelUI = new GameObject[3];
+    [SerializeField] private GameObject modeUIParent;
+    [SerializeField] private GameObject levelUIParent;
 
 
     // Start is called before the first frame update
@@ -37,6 +39,9 @@ public class SelectDirector : MonoBehaviour
             modeUI[i].GetComponent <Image>().sprite = modeSprite[i];
         }
 
+        modeUIParent.SetActive(true);
+        levelUIParent.SetActive(false);
+
         // エラーチェック
         ErrorCheck();
 
@@ -52,11 +57,24 @@ public class SelectDirector : MonoBehaviour
 
     void ErrorCheck()
     {
+        if (modeUIParent == null)
+        {
+            Debug.Log("modeUIParentがNULLです");
+            return;
+        }
+
+        if (levelUIParent == null)
+        {
+            Debug.Log("levelUIParentがNULLです");
+            return;
+        }
+
         if (selectUI == null)
         {
             Debug.Log("selectUIがNULLです");
             return;
         }
+
         if (selectSprite == null)
         {
             Debug.Log("selectSpriteがNULLです");
