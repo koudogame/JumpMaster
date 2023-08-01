@@ -1768,8 +1768,8 @@ MonoBehaviour:
   up_limit_obj: {fileID: 2011856902}
   down_limit_obj: {fileID: 1177222054}
   scenes:
-  - Game
   - Select
+  - Game
   - Option
   - End
   - Tutorial
