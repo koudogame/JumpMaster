@@ -8,8 +8,8 @@ public sealed class SelectModeSingleton : MonoBehaviour
     private static SelectModeSingleton instance;
     public static SelectModeSingleton Instance => instance;
 
-    public string Mode = "Simple";
-    public string Level = "Easy";
+    [SerializeField] private string Mode = "Standard";
+    [SerializeField] private string Level = "Easy";
 
     private void Awake()
     {
@@ -24,32 +24,52 @@ public sealed class SelectModeSingleton : MonoBehaviour
         // SceneëJà⁄Ç≈îjä¸Ç≥ÇÍÇ»ÇÊÇ§Ç…Ç∑ÇÈÅB      
         DontDestroyOnLoad(this);
     }
-}
 
-// "SelectScene"ë§
-public class ModeChanger
-{
     public void SetMode(string mode)
     {
-        SelectModeSingleton.Instance.Mode = mode;
+        Instance.Mode = mode;
     }
 
     public void SetLevel(string level)
     {
-        SelectModeSingleton.Instance.Level = level;
+        Instance.Level = level;
     }
-}
 
-// "GameScene"ë§
-public class ModeGetter
-{
     public string GetMode()
     {
-        return SelectModeSingleton.Instance.Mode;
+        return Instance.Mode;
     }
 
     public string GetLevel()
     {
-        return SelectModeSingleton.Instance.Level;
+        return Instance.Level;
     }
 }
+
+//// "SelectScene"ë§
+//public class ModeChanger
+//{
+//    public void SetMode(string mode)
+//    {
+//        SelectModeSingleton.Instance.Mode = mode;
+//    }
+
+//    public void SetLevel(string level)
+//    {
+//        SelectModeSingleton.Instance.Level = level;
+//    }
+//}
+
+//// "GameScene"ë§
+//public class ModeGetter
+//{
+//    public string GetMode()
+//    {
+//        return SelectModeSingleton.Instance.Mode;
+//    }
+
+//    public string GetLevel()
+//    {
+//        return SelectModeSingleton.Instance.Level;
+//    }
+//}
