@@ -30,8 +30,12 @@ public class GameDirector : MonoBehaviour
     [Header("Mode&Level")]
     [SerializeField] private string mode;
     [SerializeField] private string level;
-    [SerializeField] private string[] modeNames = new string[2];
-    [SerializeField] private string[] levelNames = new string[3];
+    //[SerializeField] private string[] modeNames = new string[2];
+    //[SerializeField] private string[] levelNames = new string[3];
+
+    [Header("Player")]
+    [SerializeField] private GameObject player;
+    [SerializeField] private bool wasGrounded;
 
 
     private ScoreChanger sceneSetter;
@@ -62,6 +66,7 @@ public class GameDirector : MonoBehaviour
         endTime = 0f;
         startFlag = true;
         isClear = false;
+        wasGrounded = true;
 
         // エラーチェック
         if (startAndEndUI == null)
@@ -105,6 +110,14 @@ public class GameDirector : MonoBehaviour
     {
         ErrorCheck();
 
+        bool EndFlag = false;
+        if (player.GetComponent<PlayerMove>().GetTrampolineJump()) { }
+        else if (player.GetComponent<PlayerMove>().GetIsGrounded()
+            && !wasGrounded)
+        {
+            EndFlag = true;
+        }
+
         ///- 制限時間処理
         // 制限時間カウント処理と、開始および終了合図のUI処理
         if( !unLimitedFlag )nowTime -= Time.deltaTime;
@@ -127,7 +140,7 @@ public class GameDirector : MonoBehaviour
             startAndEndUI.GetComponent<Image>().sprite = defSprite;
             startFlag = false;
         }
-        else if( nowTime <= endTime && !isClear )
+        else if( ( ( nowTime <= endTime && !unLimitedFlag ) || ( unLimitedFlag && EndFlag ) ) && !isClear )
         {
             // クリア後の処理
             startAndEndUI.GetComponent<Image>().sprite = endSprite;
@@ -138,7 +151,7 @@ public class GameDirector : MonoBehaviour
             nowTime = 3f;
             isClear = true;
         }
-        else if (nowTime <= endTime && isClear)
+        else if( ( nowTime <= endTime || unLimitedFlag ) && isClear )
         {
             //StartCoroutine(/*fade.StartFade(0.0f, 1.0f)*/fade.FadeOut());
             isClear = false;
@@ -224,6 +237,11 @@ public class GameDirector : MonoBehaviour
                 default: break;
             }
         }
+
+
+        // 接地判定の履歴を保存
+        wasGrounded = player.GetComponent<PlayerMove>().GetWasGrounded();
+        if (player.GetComponent<PlayerMove>().GetTrampolineJump()) wasGrounded = true;
     }
 
     private void FixedUpdate()
@@ -299,7 +317,7 @@ public class GameDirector : MonoBehaviour
     void LevelSet()
     {
         if (level == null) return;
-        else
+        else if (mode != "Sudden Death")
         {
             if (level == "Easy")
             {

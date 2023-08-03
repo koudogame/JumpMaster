@@ -670,6 +670,7 @@ MonoBehaviour:
   endTime: 60
   nowTime: 0
   startFlag: 0
+  unLimitedFlag: 0
   score: 0
   fade: {fileID: 1506856941}
   startSprite: {fileID: 21300000, guid: f24b3cde1eab1a04ea310b5f097d4abd, type: 3}
@@ -686,6 +687,9 @@ MonoBehaviour:
   - {fileID: 21300000, guid: cb1919a0c333da1428dd42b675aff14b, type: 3}
   - {fileID: 21300000, guid: ee419a0a91b2a6944a863d352657c56a, type: 3}
   - {fileID: 21300000, guid: 5058420aa08168947ae349a68cb5c467, type: 3}
+  mode: 
+  level: 
+  player: {fileID: 1751836450}
 --- !u!4 &552184227
 Transform:
   m_ObjectHideFlags: 0

@@ -23,6 +23,7 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] float jumpCooldown = 1;
     [SerializeField] float airMultiplier = 0.2f;
     bool readyToJump;
+    bool trampolineJump;
 
     [Header("Ground Check")]
     [SerializeField] LayerMask whatIsGround;
@@ -79,6 +80,7 @@ public class PlayerMove : MonoBehaviour
         rigidBody.drag = groundDrag;
 
         readyToJump = true;
+        trampolineJump = false;
         jumpAnim = false;
 
         // Animatorコンポーネントを取得する
@@ -96,28 +98,7 @@ public class PlayerMove : MonoBehaviour
         Rotate();
         SpeedControl();
 
-        //if ( isGrounded)
-        //{
-            anim.SetFloat("JumpSpeed", 1f);
-        //}
-        //else if (jumpAnim)
-        //{
-        //    anim.Update(0f);
-        //    var state = anim.GetCurrentAnimatorStateInfo(0);
-        //    float time = Mathf.Lerp(state.length, 0, state.normalizedTime);
-
-        //    Debug.Log(time);
-        //    // ジャンプアニメーションの着地挙動のずらし処理
-        //    if (jumpAnim && time >= 0.8f)
-        //    {
-        //        anim.SetFloat("JumpSpeed",0f);
-        //        jumpAnim = false;
-        //    }
-        //    else if (isGrounded && !wasGrounded)
-        //    {
-        //        anim.SetFloat("JumpSpeed", 1f);
-        //    }
-        //}
+        anim.SetFloat("JumpSpeed", 1f);
 
         if (jumpInput)
         {
@@ -242,6 +223,10 @@ public class PlayerMove : MonoBehaviour
             if (anim.GetBool("Fall")) anim.SetBool("Fall", false);
         }
     }
+
+    public bool GetIsGrounded() { return isGrounded; }
+
+    public bool GetWasGrounded() { return wasGrounded; }
 
 
     // 移動入力を受け取る関数
@@ -370,6 +355,8 @@ public class PlayerMove : MonoBehaviour
         readyToJump = true;
         exitingSlope = false;
     }
+    public void SetTrampolineJump(bool Flag) { trampolineJump = Flag; }
+    public bool GetTrampolineJump() { return trampolineJump; }
     public void JumpAnimFlagOn()
     {
         anim.SetBool("Jump", true);
