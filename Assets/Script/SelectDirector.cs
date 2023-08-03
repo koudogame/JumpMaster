@@ -24,6 +24,8 @@ public class SelectDirector : MonoBehaviour
     [SerializeField] private GameObject[] levelUI = new GameObject[3];
     [SerializeField] private GameObject modeUIParent;
     [SerializeField] private GameObject levelUIParent;
+    [SerializeField] private RectTransform[] modeUIRectTrans = new RectTransform[2];
+    [SerializeField] private RectTransform[] levelUIRectTrans = new RectTransform[3];
 
 
     //************************** 入力情報 **************************//
@@ -111,9 +113,13 @@ public class SelectDirector : MonoBehaviour
         //  枠の初期座標を設定
         up_limit_pos = up_limit_obj.localPosition;
         down_limit_pos = down_limit_obj.localPosition;
+        var prev_pos = frame.localPosition;
+        frame.localPosition = new Vector3(
+            prev_pos.x, up_limit_pos.y, prev_pos.z);
 
         //  カーソルの増減値を設定
-        move_value = Mathf.Abs(down_limit_pos.y) / (float)GetSelectMax();
+        //move_value = Mathf.Abs(down_limit_pos.y) / (float)GetSelectMax();
+        move_value = up_limit_pos.y - down_limit_pos.y;
 
         // エラーチェック
         ErrorCheck();
@@ -163,6 +169,18 @@ public class SelectDirector : MonoBehaviour
                     choices[i] = levelUI[i];
                 }
             }
+
+            //  枠の初期座標を設定
+            up_limit_obj = levelUIRectTrans[0];
+            down_limit_obj = levelUIRectTrans[1];
+            up_limit_pos = up_limit_obj.localPosition;
+            down_limit_pos = down_limit_obj.localPosition;
+            var prev_pos = frame.localPosition;
+            frame.localPosition = new Vector3(
+                prev_pos.x, up_limit_pos.y, prev_pos.z);
+
+            //  カーソルの増減値を設定
+            move_value = up_limit_pos.y - down_limit_pos.y;
 
             modeUIParent.SetActive(false);
             levelUIParent.SetActive(true);
@@ -333,6 +351,24 @@ public class SelectDirector : MonoBehaviour
             if (modeUI[i] == null)
             {
                 Debug.Log("modeUI[ " + i + " ]がNULLです");
+                return;
+            }
+        }
+
+        for (int i = 0; i < levelUIRectTrans.Length; ++i)
+        {
+            if (levelUIRectTrans[i] == null)
+            {
+                Debug.Log("levelUIRectTrans[ " + i + " ]がNULLです");
+                return;
+            }
+        }
+
+        for (int i = 0; i < modeUIRectTrans.Length; ++i)
+        {
+            if (modeUIRectTrans[i] == null)
+            {
+                Debug.Log("modeUIRectTrans[ " + i + " ]がNULLです");
                 return;
             }
         }

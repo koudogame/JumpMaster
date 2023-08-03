@@ -15,6 +15,7 @@ public class GameDirector : MonoBehaviour
     [SerializeField] float endTime = 0f;
     [SerializeField] float nowTime = 60f;
     [SerializeField] bool startFlag = false;
+    [SerializeField] bool unLimitedFlag = false;
 
     [Header("Score")]
     [SerializeField] int score = 0;
@@ -25,6 +26,12 @@ public class GameDirector : MonoBehaviour
     [SerializeField] private Sprite endSprite;
     [SerializeField] private Sprite defSprite;
     [SerializeField] private Sprite[] countSprite = new Sprite[10];
+
+    [Header("Mode&Level")]
+    [SerializeField] private string mode;
+    [SerializeField] private string level;
+    [SerializeField] private string[] modeNames = new string[2];
+    [SerializeField] private string[] levelNames = new string[3];
 
 
     private ScoreChanger sceneSetter;
@@ -49,6 +56,8 @@ public class GameDirector : MonoBehaviour
         setter = GameObject.Find("GameScoreSingleton");
 
         startAndEndUI.GetComponent<Image>().sprite = defSprite;
+        mode = SelectModeSingleton.Instance.GetMode();
+        level = SelectModeSingleton.Instance.GetLevel();
         nowTime = 5f;
         endTime = 0f;
         startFlag = true;
@@ -98,7 +107,7 @@ public class GameDirector : MonoBehaviour
 
         ///- 制限時間処理
         // 制限時間カウント処理と、開始および終了合図のUI処理
-        nowTime -= Time.deltaTime;
+        if( !unLimitedFlag )nowTime -= Time.deltaTime;
         if( nowTime < 0f ) nowTime = 0f;
 
         if( startFlag )
@@ -113,9 +122,9 @@ public class GameDirector : MonoBehaviour
         if ( startFlag && nowTime <= endTime )
         {
             // スタート時の処理
+            ModeSet();
+            LevelSet();
             startAndEndUI.GetComponent<Image>().sprite = defSprite;
-            endTime = 0f;
-            nowTime = 60f;
             startFlag = false;
         }
         else if( nowTime <= endTime && !isClear )
@@ -262,6 +271,53 @@ public class GameDirector : MonoBehaviour
             {
                 Debug.Log("countSprite[ " + i + " ]がNULLです");
                 return;
+            }
+        }
+    }
+
+    void ModeSet()
+    {
+        if (mode == null) return;
+        else
+        {
+            if(mode == "Standard")
+            {
+                // スタート時の処理
+                endTime = 0f;
+                nowTime = 60f;
+            }
+            else if(mode == "Sudden Death")
+            {
+                // スタート時の処理
+                endTime = 99f;
+                nowTime = 99f;
+                unLimitedFlag = true;
+            }
+        }
+    }
+
+    void LevelSet()
+    {
+        if (level == null) return;
+        else
+        {
+            if (level == "Easy")
+            {
+                // スタート時の処理
+                endTime = 0f;
+                nowTime = 60f;
+            }
+            else if (level == "Normal")
+            {
+                // スタート時の処理
+                endTime = 0f;
+                nowTime = 40f;
+            }
+            else if (level == "Hard")
+            {
+                // スタート時の処理
+                endTime = 0f;
+                nowTime = 20f;
             }
         }
     }
