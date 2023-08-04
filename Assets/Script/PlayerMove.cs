@@ -23,7 +23,6 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] float jumpCooldown = 1;
     [SerializeField] float airMultiplier = 0.2f;
     bool readyToJump;
-    bool trampolineJump;
 
     [Header("Ground Check")]
     [SerializeField] LayerMask whatIsGround;
@@ -80,7 +79,6 @@ public class PlayerMove : MonoBehaviour
         rigidBody.drag = groundDrag;
 
         readyToJump = true;
-        trampolineJump = false;
         jumpAnim = false;
 
         // Animatorコンポーネントを取得する
@@ -355,8 +353,6 @@ public class PlayerMove : MonoBehaviour
         readyToJump = true;
         exitingSlope = false;
     }
-    public void SetTrampolineJump(bool Flag) { trampolineJump = Flag; }
-    public bool GetTrampolineJump() { return trampolineJump; }
     public void JumpAnimFlagOn()
     {
         anim.SetBool("Jump", true);

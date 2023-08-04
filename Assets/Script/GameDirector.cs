@@ -36,6 +36,7 @@ public class GameDirector : MonoBehaviour
     [Header("Player")]
     [SerializeField] private GameObject player;
     [SerializeField] private bool wasGrounded;
+    [SerializeField] private float hitTrampolinePosY;
 
 
     private ScoreChanger sceneSetter;
@@ -64,6 +65,7 @@ public class GameDirector : MonoBehaviour
         level = SelectModeSingleton.Instance.GetLevel();
         nowTime = 5f;
         endTime = 0f;
+        hitTrampolinePosY = 0f;
         startFlag = true;
         isClear = false;
         wasGrounded = true;
@@ -111,12 +113,12 @@ public class GameDirector : MonoBehaviour
         ErrorCheck();
 
         bool EndFlag = false;
-        if (player.GetComponent<PlayerMove>().GetTrampolineJump()) { }
-        else if (player.GetComponent<PlayerMove>().GetIsGrounded()
+        if (player.GetComponent<PlayerMove>().GetIsGrounded()
             && !wasGrounded)
         {
-            EndFlag = true;
+            if(player.transform.position.y < hitTrampolinePosY) EndFlag = true;
         }
+        if(EndFlag)Debug.Log(EndFlag);
 
         ///- 制限時間処理
         // 制限時間カウント処理と、開始および終了合図のUI処理
@@ -144,16 +146,17 @@ public class GameDirector : MonoBehaviour
         {
             // クリア後の処理
             startAndEndUI.GetComponent<Image>().sprite = endSprite;
-            StartCoroutine(/*fade.StartFade(0.0f, 1.0f)*/fade.FadeOut());
+            //StartCoroutine(/*fade.StartFade(0.0f, 1.0f)*/fade.FadeOut());
             //new WaitForSeconds(12);
             //StartCoroutine(/*fade.StartFade(0.0f, 1.0f)*/fade.FadeOut());
             endTime = 0f;
             nowTime = 3f;
+            unLimitedFlag = false;
             isClear = true;
         }
-        else if( ( nowTime <= endTime || unLimitedFlag ) && isClear )
+        else if( nowTime <= endTime && isClear )
         {
-            //StartCoroutine(/*fade.StartFade(0.0f, 1.0f)*/fade.FadeOut());
+            StartCoroutine(/*fade.StartFade(0.0f, 1.0f)*/fade.FadeOut());
             isClear = false;
             endTime = 0f;
             nowTime = 0f;
@@ -163,7 +166,6 @@ public class GameDirector : MonoBehaviour
             /*sceneSetter.SetScore(score);*/ /*GetComponent<ScoreChanger>().SetScore(score);*/
             SceneManager.LoadScene("Result");
         }
-        //if(fade.GetFadeAlpha() >= 1f) SceneManager.LoadScene("Result");
 
         // 制限時間UIの処理
         if ( !startFlag && !isClear )
@@ -241,7 +243,6 @@ public class GameDirector : MonoBehaviour
 
         // 接地判定の履歴を保存
         wasGrounded = player.GetComponent<PlayerMove>().GetWasGrounded();
-        if (player.GetComponent<PlayerMove>().GetTrampolineJump()) wasGrounded = true;
     }
 
     private void FixedUpdate()
@@ -363,6 +364,8 @@ public class GameDirector : MonoBehaviour
     //public void CallClear() { isClear = true; }
 
     public void ScoreCount() { ++score; }
+
+    public void SetHitTrampolinePosY( float HitPosY ) { hitTrampolinePosY = HitPosY; }
 
     bool GetStartFlag() { return startFlag; }
 }

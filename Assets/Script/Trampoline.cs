@@ -44,8 +44,8 @@ public class Trampoline : MonoBehaviour
             if(collision.transform.position.y > this.transform.position.y && !jumpFlag)
             {
                 jumpFlag = true;
-                player.GetComponent<PlayerMove>().SetTrampolineJump(true);
                 collision.rigidbody.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+                director.GetComponent<GameDirector>().SetHitTrampolinePosY(this.transform.position.y);
             }
         }
     }
@@ -67,7 +67,6 @@ public class Trampoline : MonoBehaviour
                 generator.GetComponent<TrampolineGenerator>().DestroyCnt(this.transform.position);
                 director.GetComponent<GameDirector>().ScoreCount();
                 player.GetComponent<PlayerMove>().JumpAnimFlagOn();
-                player.GetComponent<PlayerMove>().SetTrampolineJump(false);
                 Destroy(gameObject);
             }
         }
