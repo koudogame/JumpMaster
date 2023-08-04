@@ -28,8 +28,8 @@ public class GameDirector : MonoBehaviour
     [SerializeField] private Sprite[] countSprite = new Sprite[10];
 
     [Header("Mode&Level")]
-    [SerializeField] private string mode;
-    [SerializeField] private string level;
+    [SerializeField] private string mode = "Standard";
+    [SerializeField] private string level = "Easy";
     //[SerializeField] private string[] modeNames = new string[2];
     //[SerializeField] private string[] levelNames = new string[3];
 
@@ -57,8 +57,18 @@ public class GameDirector : MonoBehaviour
         countdown2UI = GameObject.Find("Countdown2");
 
         startAndEndUI.GetComponent<Image>().sprite = defSprite;
-        mode = SelectModeSingleton.Instance.GetMode();
-        level = SelectModeSingleton.Instance.GetLevel();
+        //mode = SelectModeSingleton.Instance.GetMode();
+        //level = SelectModeSingleton.Instance.GetLevel();
+        if (SelectModeSingleton.Instance != null)
+        {
+            mode = SelectModeSingleton.Instance.GetMode();
+            level = SelectModeSingleton.Instance.GetLevel();
+        }
+        else
+        {
+            mode = "Standard";
+            level = "Easy";
+        }
         nowTime = 5f;
         endTime = 0f;
         hitTrampolinePosY = 0f;
