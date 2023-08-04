@@ -39,8 +39,6 @@ public class GameDirector : MonoBehaviour
     [SerializeField] private float hitTrampolinePosY;
 
 
-    private ScoreChanger sceneSetter;
-    private GameObject setter;
     private GameObject startAndEndUI;
     private GameObject counter1UI;
     private GameObject counter2UI;
@@ -57,8 +55,6 @@ public class GameDirector : MonoBehaviour
         counter2UI = GameObject.Find("Counter2");
         countdown1UI = GameObject.Find("Countdown1");
         countdown2UI = GameObject.Find("Countdown2");
-        //sceneSetter = GetComponent<ScoreChanger>();
-        setter = GameObject.Find("GameScoreSingleton");
 
         startAndEndUI.GetComponent<Image>().sprite = defSprite;
         mode = SelectModeSingleton.Instance.GetMode();
@@ -113,12 +109,15 @@ public class GameDirector : MonoBehaviour
         ErrorCheck();
 
         bool EndFlag = false;
-        if (player.GetComponent<PlayerMove>().GetIsGrounded()
-            && !wasGrounded)
+        if (unLimitedFlag)
         {
-            if(player.transform.position.y < hitTrampolinePosY) EndFlag = true;
+            if (player.GetComponent<PlayerMove>().GetIsGrounded()
+                && !wasGrounded)
+            {
+                if (player.transform.position.y < hitTrampolinePosY) EndFlag = true;
+            }
+            if (EndFlag) Debug.Log(EndFlag);
         }
-        if(EndFlag)Debug.Log(EndFlag);
 
         ///- 制限時間処理
         // 制限時間カウント処理と、開始および終了合図のUI処理
@@ -160,10 +159,8 @@ public class GameDirector : MonoBehaviour
             isClear = false;
             endTime = 0f;
             nowTime = 0f;
-            /*sceneSetter.SetTime((int)nowTime);*/ /*GetComponent<ScoreChanger>().SetTime((int)nowTime);*/
             GameScoreSingleton.Instance.Score = score;
             GameScoreSingleton.Instance.Time = (int)nowTime;
-            /*sceneSetter.SetScore(score);*/ /*GetComponent<ScoreChanger>().SetScore(score);*/
             SceneManager.LoadScene("Result");
         }
 
@@ -241,8 +238,11 @@ public class GameDirector : MonoBehaviour
         }
 
 
-        // 接地判定の履歴を保存
-        wasGrounded = player.GetComponent<PlayerMove>().GetWasGrounded();
+        if (unLimitedFlag)
+        {
+            // 接地判定の履歴を保存
+            wasGrounded = player.GetComponent<PlayerMove>().GetWasGrounded();
+        }
     }
 
     private void FixedUpdate()
