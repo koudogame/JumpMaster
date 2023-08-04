@@ -41,8 +41,11 @@ public class ResultDirector : MonoBehaviour
         resultUI.GetComponent<Image>().sprite = resultSprite;
         //score = GetComponent<ScoreGetter>().GetScore();
         //time = GetComponent<ScoreGetter>().GetTime();
-        score = GameScoreSingleton.Instance.Score;
-        time = GameScoreSingleton.Instance.Time;
+        if (GameScoreSingleton.Instance != null)
+        {
+            score = GameScoreSingleton.Instance.Score;
+            time = GameScoreSingleton.Instance.Time;
+        }
 
         // エラーチェック
         if (resultUI == null)

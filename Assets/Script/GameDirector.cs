@@ -363,7 +363,7 @@ public class GameDirector : MonoBehaviour
     ////  ƒNƒŠƒA‚ð’m‚ç‚¹‚Ä‚à‚ç‚¤
     //public void CallClear() { isClear = true; }
 
-    public void ScoreCount() { ++score; }
+    public void ScoreCount() { if( !isClear ) ++score; }
 
     public void SetHitTrampolinePosY( float HitPosY ) { hitTrampolinePosY = HitPosY; }
 
