@@ -1594,6 +1594,7 @@ MonoBehaviour:
   maxRange: 10
   nowCreateCnt: 0
   maxCreateCnt: 10
+  player: {fileID: 383750138}
 --- !u!4 &1134698434
 Transform:
   m_ObjectHideFlags: 0

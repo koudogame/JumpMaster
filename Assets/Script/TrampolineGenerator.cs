@@ -22,9 +22,18 @@ public class TrampolineGenerator : MonoBehaviour
     [SerializeField] int nowCreateCnt = 0;
     [SerializeField] int maxCreateCnt = 10;
 
+    [Header("Player")]
+    [SerializeField] GameObject player;
+
     // Start is called before the first frame update
     void Start()
     {
+        if (player == null)
+        {
+            Debug.LogWarning("TrampolineGenerator : playerにオブジェクトが設定されていません");
+            return;
+        }
+
         allObjPos = new Vector3[ maxCreateCnt ];
     }
 
@@ -77,11 +86,14 @@ public class TrampolineGenerator : MonoBehaviour
             // nowCreateCnt回まで試す
             for (int n = 0; n < nowCreateCnt; ++n)
             {
-                // ランダムの位置
-                px = Random.Range(minRange, maxRange);
-                pz = Random.Range(minRange, maxRange);
-                go.transform.position = new Vector3(px, posY, pz);
-                Vector3 pos = go.transform.position;
+                Vector3 pos;
+                do
+                {
+                    // ランダムの位置
+                    px = Random.Range(minRange, maxRange);
+                    pz = Random.Range(minRange, maxRange);
+                    pos = new Vector3(px, posY, pz);
+                } while (pos == player.transform.position);
 
                 // ボックスとアイテムが重ならないとき
                 if (!Physics.CheckBox(pos, halfExtents, Quaternion.identity))
