@@ -28,37 +28,56 @@ public sealed class GameScoreSingleton : MonoBehaviour
         // SceneëJà⁄Ç≈îjä¸Ç≥ÇÍÇ»ÇÊÇ§Ç…Ç∑ÇÈÅB      
         DontDestroyOnLoad(this);
     }
-}
-
-// "GameScene"ë§
-public class ScoreChanger
-{
-    public void ScorePlusOne()
-    {
-        GameScoreSingleton.Instance.Score++;
-    }
 
     public void SetScore(int score)
     {
-        GameScoreSingleton.Instance.Score = score;
+        Instance.Score = score;
     }
 
     public void SetTime(int time)
     {
-        GameScoreSingleton.Instance.Time = time;
+        Instance.Time = time;
     }
-}
-
-// "ResultScene"ë§
-public class ScoreGetter
-{
     public int GetScore()
     {
-        return GameScoreSingleton.Instance.Score;
+        return Instance.Score;
     }
 
     public int GetTime()
     {
-        return GameScoreSingleton.Instance.Time;
+        return Instance.Time;
     }
 }
+
+//// "GameScene"ë§
+//public class ScoreChanger
+//{
+//    public void ScorePlusOne()
+//    {
+//        GameScoreSingleton.Instance.Score++;
+//    }
+
+//    public void SetScore(int score)
+//    {
+//        GameScoreSingleton.Instance.Score = score;
+//    }
+
+//    public void SetTime(int time)
+//    {
+//        GameScoreSingleton.Instance.Time = time;
+//    }
+//}
+
+//// "ResultScene"ë§
+//public class ScoreGetter
+//{
+//    public int GetScore()
+//    {
+//        return GameScoreSingleton.Instance.Score;
+//    }
+
+//    public int GetTime()
+//    {
+//        return GameScoreSingleton.Instance.Time;
+//    }
+//}

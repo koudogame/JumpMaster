@@ -27,6 +27,11 @@ public class SelectDirector : MonoBehaviour
     [SerializeField] private RectTransform[] modeUIRectTrans = new RectTransform[2];
     [SerializeField] private RectTransform[] levelUIRectTrans = new RectTransform[3];
 
+    [Header("Sound")]
+    [SerializeField] private SoundPlayParts bgm;
+    [SerializeField] private SoundPlayParts moveSE;
+    [SerializeField] private SoundPlayParts pushSE;
+
 
     //************************** 入力情報 **************************//
 
@@ -38,9 +43,10 @@ public class SelectDirector : MonoBehaviour
     [Header("枠オブジェクト"), SerializeField] private RectTransform frame;           // 枠の座標(rect)
     [Header("枠の座標(上)"), SerializeField] private RectTransform up_limit_obj;     //  カーソル初期位置(上)に設定するobj
     [Header("枠の座標(下)"), SerializeField] private RectTransform down_limit_obj;   //  カーソル初期位置(下)に設定するobj
+    [Header("カーソル移動量"), SerializeField] private float move_value;
     private Vector3 up_limit_pos;   //  カーソル初期Y(上)
     private Vector3 down_limit_pos; //  カーソル初期Y(下)
-    private float move_value;       //  カーソル移動一回分の増減値
+    //private float move_value;       //  カーソル移動一回分の増減値
 
 
     //************************** 選択肢関連 **************************//
@@ -124,6 +130,8 @@ public class SelectDirector : MonoBehaviour
         // エラーチェック
         ErrorCheck();
 
+        bgm.PlayBGM();
+
         // フェードイン
         StartCoroutine(fade.FadeIn());
     }
@@ -143,6 +151,8 @@ public class SelectDirector : MonoBehaviour
         //  一度も移行していないか or 入力された瞬間以外なら処理しない
         if (isNext || !context.started) return;
 
+        pushSE.PlaySE();
+
         // 選択番号を決定する
         next_num = select_num;
 
@@ -153,38 +163,33 @@ public class SelectDirector : MonoBehaviour
 
             if(next_num == 0)
             {
-                choices = null;
                 choices = new GameObject[levelUI.Length];
                 for (int i = 0; i < levelUI.Length; ++i)
                 {
                     choices[i] = levelUI[i];
                 }
+
+                //  枠の初期座標を設定
+                up_limit_obj = levelUIRectTrans[0];
+                down_limit_obj = levelUIRectTrans[1];
+                up_limit_pos = up_limit_obj.localPosition;
+                down_limit_pos = down_limit_obj.localPosition;
+                var prev_pos = frame.localPosition;
+                frame.localPosition = new Vector3(
+                    prev_pos.x, up_limit_pos.y, prev_pos.z);
+
+                //  カーソルの増減値を設定
+                move_value = up_limit_pos.y - down_limit_pos.y;
+
+                modeUIParent.SetActive(false);
+                levelUIParent.SetActive(true);
+
+                pageNum = 1;
             }
             else if(next_num == 1)
             {
-                choices = null;
-                choices = new GameObject[levelUI.Length];
-                for (int i = 0; i < levelUI.Length; ++i)
-                {
-                    choices[i] = levelUI[i];
-                }
+                Next();
             }
-
-            //  枠の初期座標を設定
-            up_limit_obj = levelUIRectTrans[0];
-            down_limit_obj = levelUIRectTrans[1];
-            up_limit_pos = up_limit_obj.localPosition;
-            down_limit_pos = down_limit_obj.localPosition;
-            var prev_pos = frame.localPosition;
-            frame.localPosition = new Vector3(
-                prev_pos.x, up_limit_pos.y, prev_pos.z);
-
-            //  カーソルの増減値を設定
-            move_value = up_limit_pos.y - down_limit_pos.y;
-
-            modeUIParent.SetActive(false);
-            levelUIParent.SetActive(true);
-            pageNum = 1;
         }
         else if(pageNum == 1)
         {
@@ -211,6 +216,8 @@ public class SelectDirector : MonoBehaviour
     {
         //  フェード中は処理しない or 入力された瞬間以外なら処理しない
         if (isNext || !context.started) return;
+
+        moveSE.PlaySE();
 
         // 入力値を取得
         float counter = context.ReadValue<float>();

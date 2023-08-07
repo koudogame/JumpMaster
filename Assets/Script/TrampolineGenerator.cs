@@ -1,9 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 public class TrampolineGenerator : MonoBehaviour
 {
@@ -17,6 +15,7 @@ public class TrampolineGenerator : MonoBehaviour
     [Header("Position Range")]
     [SerializeField] float minRange = -10f;
     [SerializeField] float maxRange = 10f;
+    [SerializeField] float originRange = 10f;
 
     [Header("CreateCount")]
     [SerializeField] int nowCreateCnt = 0;
@@ -24,6 +23,7 @@ public class TrampolineGenerator : MonoBehaviour
 
     [Header("Player")]
     [SerializeField] GameObject player;
+    [SerializeField] bool playerIsJump = false;
 
     // Start is called before the first frame update
     void Start()
@@ -61,26 +61,28 @@ public class TrampolineGenerator : MonoBehaviour
         if (nowCreateCnt >= maxCreateCnt) return;
 
         GameObject go = Instantiate(prefab);
+        float minX = minRange;
+        float maxX = maxRange;
+        float minZ = minRange;
+        float maxZ = maxRange;
+
+        if ( playerIsJump )
+        {
+            minX = player.transform.position.x - 5f;
+            maxX = player.transform.position.x + 5f;
+            minZ = player.transform.position.z - 5f;
+            maxZ = player.transform.position.z + 5f;
+            playerIsJump = false;
+        }
 
         // 生成範囲内で、ランダムに座標を決める
-        float px = Random.Range(minRange, maxRange);
-        float pz = Random.Range(minRange, maxRange);
+        float px = Random.Range(minX, maxX);
+        float pz = Random.Range(minZ, maxZ);
         go.transform.position = new Vector3(px, posY, pz);
-        //Vector3 goPos = new Vector3(px, posY, pz);
 
         // 現在の生成数が0より大きいとき
         if (nowCreateCnt > 0)
         {
-            //for (int i = 0; i < createCnt; i++)
-            //{
-            //    while (go.transform.position == allObjPos[i])
-            //    {
-            //        px = Random.Range(minRange, maxRange);
-            //        pz = Random.Range(minRange, maxRange);
-            //        go.transform.position = new Vector3(px, posY, pz);
-            //    }
-            //}
-
             Vector3 halfExtents = new Vector3(1f, 0.05f, 1f);
             // ---
             // nowCreateCnt回まで試す
@@ -90,40 +92,26 @@ public class TrampolineGenerator : MonoBehaviour
                 do
                 {
                     // ランダムの位置
-                    px = Random.Range(minRange, maxRange);
-                    pz = Random.Range(minRange, maxRange);
+                    px = Random.Range(minX, maxX);
+                    pz = Random.Range(minZ, maxZ);
                     pos = new Vector3(px, posY, pz);
                 } while (pos == player.transform.position);
 
                 // ボックスとアイテムが重ならないとき
                 if (!Physics.CheckBox(pos, halfExtents, Quaternion.identity))
                 {
-                    go.transform.position = pos;
-                    break;
+                    // さらに、接地しているとき
+                    if (Physics.Raycast(pos, Vector3.down, 1f))
+                    {
+                        //Debug.Log("レイがヒット");
+                        go.transform.position = pos;
+                        break;
+                    }
                 }
             }
-            //Camera camera = GetComponent<Camera>();
-            //float distance = 20.0f;
-            //Ray ray = camera.ScreenPointToRay(go.transform.position);
-            //RaycastHit hit;
-            //if (Physics.Raycast(ray, out hit, distance))
-            //{
-            //    Vector3 movement = Vector3.Scale(prefab.transform.localScale, hit.normal) / 2;
-            //    go = Instantiate(prefab, hit.point, Quaternion.identity);
-            //    go.transform.position = new Vector3(hit.point.x + movement.x, hit.point.y + movement.y, hit.point.z + movement.z);
-            //}
-
-            //float distance = 2f;
-            //for (float i = 0; i < distance; i++)
-            //{
-            //    for (float j = 0; j < distance; j++)
-            //    {
-
-            //    }
-            //}
         }
 
-        allObjPos[nowCreateCnt] = go.transform.position; //goPos;
+        allObjPos[nowCreateCnt] = go.transform.position;
         ++nowCreateCnt;
     }
 
@@ -167,5 +155,6 @@ public class TrampolineGenerator : MonoBehaviour
         }
 
         --nowCreateCnt;
+        playerIsJump = true;
     }
 }

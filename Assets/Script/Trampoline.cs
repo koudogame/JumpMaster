@@ -9,6 +9,7 @@ public class Trampoline : MonoBehaviour
     [SerializeField] string targetTagName = "Player";
 
     [Header("Jumping")]
+    [SerializeField] GameObject jumpSE;
     [SerializeField] float jumpForce = 10;
     [SerializeField] bool  jumpFlag = false;
 
@@ -22,6 +23,9 @@ public class Trampoline : MonoBehaviour
         generator = GameObject.Find("TrampolineGenerator");
         director = GameObject.Find("GameDirector");
         player = GameObject.Find(targetName);
+        jumpSE = GameObject.Find("Sound Play Parts(Trampoline)");
+
+        if ( jumpSE == null ) return;
     }
 
     // Update is called once per frame
@@ -35,17 +39,12 @@ public class Trampoline : MonoBehaviour
         // “–‚½‚Á‚½‘ÎÛ‚ªƒ^[ƒQƒbƒg‚Æˆê’v‚·‚é‚Æ‚«
         if (collision.gameObject.name == targetName || collision.gameObject.tag == targetTagName)
         {
-            //Ray ray = new Ray(this.transform.position, Vector3.up);
-            //RaycastHit hit;
-            //if(Physics.Raycast(ray, out hit, 1f))
-            //{
-            //    collision.rigidbody.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-            //}
             if(collision.transform.position.y > this.transform.position.y && !jumpFlag)
             {
                 jumpFlag = true;
                 collision.rigidbody.AddForce(transform.up * jumpForce, ForceMode.Impulse);
                 director.GetComponent<GameDirector>().SetHitTrampolinePosY(this.transform.position.y);
+                jumpSE.GetComponent<SoundPlayParts>().PlaySE();
             }
         }
     }
@@ -55,12 +54,6 @@ public class Trampoline : MonoBehaviour
         // “–‚½‚Á‚½‘ÎÛ‚ªƒ^[ƒQƒbƒg‚Æˆê’v‚·‚é‚Æ‚«
         if (collision.gameObject.name == targetName || collision.gameObject.tag == targetTagName)
         {
-            //Ray ray = new Ray(this.transform.position, Vector3.up);
-            //RaycastHit hit;
-            //if(Physics.Raycast(ray, out hit, 1f))
-            //{
-            //    collision.rigidbody.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-            //}
             if (collision.transform.position.y > this.transform.position.y && jumpFlag)
             {
                 jumpFlag = false;

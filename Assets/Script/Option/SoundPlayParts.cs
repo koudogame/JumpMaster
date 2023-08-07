@@ -14,6 +14,7 @@ public class SoundPlayParts : MonoBehaviour
     private float volume;
     //  âπåπä«óù
     private AudioSource audioSource;
+    private bool isPitchSet = false;
 
     private void Awake()
     {
@@ -68,6 +69,26 @@ public class SoundPlayParts : MonoBehaviour
 
         //  àÍéûí‚é~âèú
         audioSource.UnPause();
+    }
+
+    public void PitchUp()
+    {
+        audioSource.pitch = Mathf.Min(audioSource.pitch + 0.1f, 2);
+    }
+
+    public void PitchDown()
+    {
+        audioSource.pitch = Mathf.Max(audioSource.pitch - 0.1f, 0.5f);
+    }
+
+    public void SetPitchSetFlag( bool flg )
+    {
+        isPitchSet = flg;
+    }
+
+    public bool GetPitchSetFlag()
+    {
+        return isPitchSet;
     }
 
     // åªç›çƒê∂íÜÇ©Ç«Ç§Ç©

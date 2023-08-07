@@ -4,7 +4,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
-using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -38,6 +37,9 @@ public class GameDirector : MonoBehaviour
     [SerializeField] private bool wasGrounded;
     [SerializeField] private float hitTrampolinePosY;
 
+    [Header("Sound")]
+    [SerializeField] private SoundPlayParts bgm;
+
 
     private GameObject startAndEndUI;
     private GameObject counter1UI;
@@ -57,18 +59,8 @@ public class GameDirector : MonoBehaviour
         countdown2UI = GameObject.Find("Countdown2");
 
         startAndEndUI.GetComponent<Image>().sprite = defSprite;
-        //mode = SelectModeSingleton.Instance.GetMode();
-        //level = SelectModeSingleton.Instance.GetLevel();
-        if (SelectModeSingleton.Instance != null)
-        {
-            mode = SelectModeSingleton.Instance.GetMode();
-            level = SelectModeSingleton.Instance.GetLevel();
-        }
-        else
-        {
-            mode = "Standard";
-            level = "Easy";
-        }
+        mode = SelectModeSingleton.Instance.GetMode();
+        level = SelectModeSingleton.Instance.GetLevel();
         nowTime = 5f;
         endTime = 0f;
         hitTrampolinePosY = 0f;
@@ -108,6 +100,8 @@ public class GameDirector : MonoBehaviour
         }
 
         ErrorCheck();
+
+        bgm.PlayBGM();
 
         // フェードイン
         StartCoroutine(fade.FadeIn());

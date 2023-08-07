@@ -17,13 +17,17 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] float moveSpeed = 10;
     [SerializeField] float rotationSpeed = 180;
     [SerializeField] float groundDrag = 10;
-    [SerializeField] GameObject runVoice;
+    [SerializeField] GameObject moveVoice;
+    [SerializeField] GameObject moveSound;
+    SoundPlayParts moveVoiceObj;
+    SoundPlayParts moveSoundObj;
 
     [Header("Jumping")]
     [SerializeField] float jumpForce = 10;
     [SerializeField] float jumpCooldown = 1;
     [SerializeField] float airMultiplier = 0.2f;
     [SerializeField] GameObject jumpVoice;
+    SoundPlayParts jumpVoiceObj;
     bool readyToJump;
 
     [Header("Ground Check")]
@@ -46,7 +50,6 @@ public class PlayerMove : MonoBehaviour
 
     Vector2 moveInput; // 移動入力
     bool jumpInput;
-    bool jumpAnim;
 
     readonly float GROUND_DRAG = 5;
     readonly float GRAVITY = 9.81f;
@@ -81,7 +84,6 @@ public class PlayerMove : MonoBehaviour
         rigidBody.drag = groundDrag;
 
         readyToJump = true;
-        jumpAnim = false;
 
         // Animatorコンポーネントを取得する
         anim = GetComponent<Animator>();
@@ -91,8 +93,12 @@ public class PlayerMove : MonoBehaviour
         orgColHight = col.height;
         orgVectColCenter = col.center;
 
-        if (runVoice == null) return;
+        if (moveSound == null) return;
+        if (moveVoice == null) return;
         if (jumpVoice == null) return;
+        moveSoundObj = moveSound.GetComponent<SoundPlayParts>();
+        moveVoiceObj = moveVoice.GetComponent<SoundPlayParts>();
+        jumpVoiceObj = jumpVoice.GetComponent<SoundPlayParts>();
     }
 
     void Update()
@@ -114,6 +120,10 @@ public class PlayerMove : MonoBehaviour
     {
         float h = Mathf.Abs(moveInput.x);  // 入力デバイスの水平軸をhで定義
         float v = Mathf.Abs(moveInput.y);  // 入力デバイスの垂直軸をvで定義
+        
+        if (Mathf.Abs(moveInput.x) > 0f && Mathf.Abs(moveInput.x) < 0.4f) h = 0.4f;
+        if (Mathf.Abs(moveInput.y) > 0f && Mathf.Abs(moveInput.y) < 0.4f) v = 0.4f;
+
         anim.SetFloat("Speed", v+h);     // Animator側で設定している"Speed"パラメタにvを渡す
         //anim.SetFloat("Direction", h); // Animator側で設定している"Direction"パラメタにhを渡す
         anim.speed = animSpeed;        // Animatorのモーション再生速度にanimSpeedを設定する
@@ -213,7 +223,6 @@ public class PlayerMove : MonoBehaviour
             if (isGrounded)
             {
                 rigidBody.drag = groundDrag;
-                //if (anim.GetBool("Fall")) anim.SetBool("Fall", false);
             }
             else
             {
@@ -255,7 +264,8 @@ public class PlayerMove : MonoBehaviour
         bool nowInput = false;
         if (moveInput == Vector2.zero)
         {
-            if ( runVoice.GetComponent<SoundPlayParts>().IsPlaying() ) runVoice.GetComponent<SoundPlayParts>().Stop();
+            if ( moveVoiceObj.IsPlaying() ) moveVoiceObj.Stop();
+            if (moveSoundObj.IsPlaying()) moveSoundObj.Stop();
             anim.SetBool("Move", false);
         }
         else
@@ -274,21 +284,24 @@ public class PlayerMove : MonoBehaviour
             if (rigidBody.velocity.y > 0)
                 rigidBody.AddForce(Vector3.down * 80f, ForceMode.Force);
 
-            if ( !runVoice.GetComponent<SoundPlayParts>().IsPlaying() && nowInput ) runVoice.GetComponent<SoundPlayParts>().PlayBGM();
+            if ( !moveVoiceObj.IsPlaying() && nowInput ) moveVoiceObj.PlayBGM();
+            if (!moveSoundObj.IsPlaying() && nowInput) moveSoundObj.PlayBGM();
         }
         // 地上
         else if (isGrounded)
         {
             rigidBody.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
 
-            if ( !runVoice.GetComponent<SoundPlayParts>().IsPlaying() && nowInput ) runVoice.GetComponent<SoundPlayParts>().PlayBGM();
+            if ( !moveVoiceObj.IsPlaying() && nowInput ) moveVoiceObj.PlayBGM();
+            if (!moveSoundObj.IsPlaying() && nowInput) moveSoundObj.PlayBGM();
         }
         // 空中
         else if (!isGrounded)
         {
             rigidBody.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
 
-            if ( runVoice.GetComponent<SoundPlayParts>().IsPlaying() ) runVoice.GetComponent<SoundPlayParts>().Stop();
+            if ( moveVoiceObj.IsPlaying() ) moveVoiceObj.Stop();
+            if (moveSoundObj.IsPlaying()) moveSoundObj.Stop();
         }
 
         // スロープにいる時重力を無効化
@@ -351,22 +364,9 @@ public class PlayerMove : MonoBehaviour
 
             Invoke(nameof(ResetJump), jumpCooldown);
 
-            ////アニメーションのステートがLocomotionの最中のみジャンプできる
-            //if (currentBaseState.fullPathHash == locoState)
-            //{
-            //    //ステート遷移中でなかったらジャンプできる
-            //    if (!anim.IsInTransition(0))
-            //    {
-            jumpVoice.GetComponent<SoundPlayParts>().PlaySE();
+            // ジャンプアニメーション
+            jumpVoiceObj.PlaySE();
             anim.SetBool("Jump", true);     // Animatorにジャンプに切り替えるフラグを送る
-                    jumpAnim = true;
-            //    }
-            //}
-            //// Rest状態になる
-            //if (currentBaseState.fullPathHash == idleState)
-            //{
-            //    anim.SetBool("Rest", true);
-            //}
         }
     }
     private void ResetJump()
@@ -376,6 +376,8 @@ public class PlayerMove : MonoBehaviour
     }
     public void JumpAnimFlagOn()
     {
+        // ジャンプアニメーション
+        jumpVoiceObj.PlaySE();
         anim.SetBool("Jump", true);
     }
 

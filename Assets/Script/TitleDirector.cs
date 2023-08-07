@@ -42,6 +42,11 @@ public class TitleDirector : MonoBehaviour
     [Header("非アクティブOPTION"), SerializeField] private GameObject option;
     [Header("非アクティブCREDIT"), SerializeField] private GameObject credit;
 
+    [Header("Sound")]
+    [SerializeField] private SoundPlayParts bgm;
+    [SerializeField] private SoundPlayParts moveSE;
+    [SerializeField] private SoundPlayParts pushSE;
+
 
 
     private void Awake()
@@ -85,6 +90,8 @@ public class TitleDirector : MonoBehaviour
         //  カーソルの増減値を設定
         move_value = Mathf.Abs(down_limit_pos.y) / (float)GetSelectMax();
 
+        bgm.PlayBGM();
+
         //  fadeinスタート
         StartCoroutine(fade.FadeIn());
     }
@@ -104,6 +111,8 @@ public class TitleDirector : MonoBehaviour
     {
         //  一度も移行していないか or 入力された瞬間以外なら処理しない
         if (isNext || !context.started) return;
+
+        pushSE.PlaySE();
 
         // シーン番号を決定する
         next_num = select_num;
