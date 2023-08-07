@@ -17,11 +17,13 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] float moveSpeed = 10;
     [SerializeField] float rotationSpeed = 180;
     [SerializeField] float groundDrag = 10;
+    [SerializeField] GameObject runVoice;
 
     [Header("Jumping")]
     [SerializeField] float jumpForce = 10;
     [SerializeField] float jumpCooldown = 1;
     [SerializeField] float airMultiplier = 0.2f;
+    [SerializeField] GameObject jumpVoice;
     bool readyToJump;
 
     [Header("Ground Check")]
@@ -88,6 +90,9 @@ public class PlayerMove : MonoBehaviour
         // CapsuleColliderコンポーネントのHeight、Centerの初期値を保存する
         orgColHight = col.height;
         orgVectColCenter = col.center;
+
+        if (runVoice == null) return;
+        if (jumpVoice == null) return;
     }
 
     void Update()
@@ -247,8 +252,17 @@ public class PlayerMove : MonoBehaviour
     /// </summary>
     void Move()
     {
-        if (moveInput == Vector2.zero) anim.SetBool("Move", false);
-        else anim.SetBool("Move", true);
+        bool nowInput = false;
+        if (moveInput == Vector2.zero)
+        {
+            if ( runVoice.GetComponent<SoundPlayParts>().IsPlaying() ) runVoice.GetComponent<SoundPlayParts>().Stop();
+            anim.SetBool("Move", false);
+        }
+        else
+        {
+            nowInput = true;
+            if ( !anim.GetBool( "Move" ) ) anim.SetBool("Move", true);
+        }
 
         moveDirection = orientationTrn.forward * moveInput.y + orientationTrn.right * moveInput.x;
 
@@ -259,16 +273,22 @@ public class PlayerMove : MonoBehaviour
 
             if (rigidBody.velocity.y > 0)
                 rigidBody.AddForce(Vector3.down * 80f, ForceMode.Force);
+
+            if ( !runVoice.GetComponent<SoundPlayParts>().IsPlaying() && nowInput ) runVoice.GetComponent<SoundPlayParts>().PlayBGM();
         }
         // 地上
         else if (isGrounded)
         {
             rigidBody.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+
+            if ( !runVoice.GetComponent<SoundPlayParts>().IsPlaying() && nowInput ) runVoice.GetComponent<SoundPlayParts>().PlayBGM();
         }
         // 空中
         else if (!isGrounded)
         {
             rigidBody.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+
+            if ( runVoice.GetComponent<SoundPlayParts>().IsPlaying() ) runVoice.GetComponent<SoundPlayParts>().Stop();
         }
 
         // スロープにいる時重力を無効化
@@ -337,8 +357,9 @@ public class PlayerMove : MonoBehaviour
             //    //ステート遷移中でなかったらジャンプできる
             //    if (!anim.IsInTransition(0))
             //    {
-                    anim.SetBool("Jump", true);     // Animatorにジャンプに切り替えるフラグを送る
-            jumpAnim = true;
+            jumpVoice.GetComponent<SoundPlayParts>().PlaySE();
+            anim.SetBool("Jump", true);     // Animatorにジャンプに切り替えるフラグを送る
+                    jumpAnim = true;
             //    }
             //}
             //// Rest状態になる

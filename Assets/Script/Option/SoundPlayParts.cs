@@ -70,6 +70,12 @@ public class SoundPlayParts : MonoBehaviour
         audioSource.UnPause();
     }
 
+    // Œ»İÄ¶’†‚©‚Ç‚¤‚©
+    public bool IsPlaying()
+    {
+        return audioSource.isPlaying;
+    }
+
 
     //  Ä¶‚Å‚«‚é‚©
     private bool CanPlay()
