@@ -25,9 +25,9 @@ public class TitleDirector : MonoBehaviour
     [Header("枠オブジェクト"), SerializeField] private RectTransform frame;           // 枠の座標(rect)
     [Header("枠の座標(上)"), SerializeField] private RectTransform up_limit_obj;     //  カーソル初期位置(上)に設定するobj
     [Header("枠の座標(下)"), SerializeField] private RectTransform down_limit_obj;   //  カーソル初期位置(下)に設定するobj
-    private Vector3 up_limit_pos;   //  カーソル初期Y(上)
-    private Vector3 down_limit_pos; //  カーソル初期Y(下)
-    private float move_value;       //  カーソル移動一回分の増減値
+    [SerializeField]private Vector3 up_limit_pos;   //  カーソル初期Y(上)
+    [SerializeField] private Vector3 down_limit_pos; //  カーソル初期Y(下)
+    [SerializeField]private float move_value;       //  カーソル移動一回分の増減値
 
 
     //************************** 選択肢関連 **************************//
@@ -86,9 +86,11 @@ public class TitleDirector : MonoBehaviour
         //  枠の初期座標を設定
         up_limit_pos = up_limit_obj.localPosition;
         down_limit_pos = down_limit_obj.localPosition;
+        up_limit_pos.y += 50f;
 
         //  カーソルの増減値を設定
         move_value = Mathf.Abs(down_limit_pos.y) / (float)GetSelectMax();
+        //move_value -= 50f;
 
         bgm.PlayBGM();
 
